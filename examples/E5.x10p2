@@ -1,0 +1,23 @@
+Program [N]
+{
+    clocked finish
+    {
+        for (i in 0..(N-1))
+        {
+            clocked async
+            {
+                for (j in i..(N-1))
+                {
+                    S0 (i, j);
+                    advance;
+                }
+                advance;
+                for (k in 0..(i-1))
+                {
+                    S1 (i, k);
+                    advance;
+                }
+            }
+        }
+    }
+}

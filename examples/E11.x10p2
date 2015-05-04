@@ -1,0 +1,22 @@
+Program [N,M,P,Q,Y]
+{
+    clocked finish
+    {
+        clocked async
+        {
+            for (i in N..(M-1))
+            {
+                S0 (i);
+                advance;
+            }
+        }
+        clocked async
+        {
+            for (j in P..(Q-1))
+            {
+                S1 (j);
+                advance;
+            }
+        }
+    }
+}
