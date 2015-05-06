@@ -139,8 +139,8 @@ static inline expression * both_numbers (expression * a, expression * b,
  * \since version `1.0.0`
  *
  * \param e Target expression.
- * \param a First operand.
- * \param b Second operand.
+ * \param left First operand.
+ * \param right Second operand.
  * \param t Binary operation.
  * \return The resulting expression.
  */

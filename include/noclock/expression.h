@@ -74,7 +74,7 @@
  * - an unary operation on another expression (its type would be either
  *   ::EXPR_NEG or ::EXPR_NOT).
  * - a binary operation on two expressions (its type would be any
- *   ::expression_type apart from ::EXPR_UNKNWON and the aforementioned types).
+ *   ::expression_type apart from ::EXPR_UNKNOWN and the aforementioned types).
  *
  * For further information on:
  *
