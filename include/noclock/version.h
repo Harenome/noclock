@@ -4,7 +4,7 @@
  * \author Harenome RAZANAJATO RANAIVOARIVONY
  * \date 2015
  * \copyright MIT License
- * \version 1.0.0
+ * \since version `1.0.0`
  */
 
 /* The MIT License (MIT)
@@ -41,6 +41,7 @@
 /**
  * \defgroup infos_group Various informations
  * \brief Miscelleanous informations.
+ * \since version `1.0.0`
  *
  * This module contains various informations such as:
  *
@@ -50,10 +51,53 @@
  * Do note that some of these informations are gathered at compilation time.
  */
 
+////////////////////////////////////////////////////////////////////////////////
+// Static variables.
+////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * \brief The No Clock version major.
+ * \ingroup version_group
+ * \since version `1.0.0`
+ */
+static const unsigned int NOCLOCK_VERSION_MAJOR = 1;
+
+/**
+ * \brief The No Clock version minor.
+ * \ingroup version_group
+ * \since version `1.0.0`
+ */
+static const unsigned int NOCLOCK_VERSION_MINOR = 0;
+
+/**
+ * \brief The No Clock version patch.
+ * \ingroup version_group
+ * \since version `1.0.0`
+ */
+static const unsigned int NOCLOCK_VERSION_PATCH = 0;
+
+////////////////////////////////////////////////////////////////////////////////
+// No Clock version.
+////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * \brief Get the No Clock version as a string.
+ * \ingroup version_group
+ * \since version `1.0.0`
+ *
+ * \return String representation of the current version.
+ */
+const char * noclock_version (void);
+
+////////////////////////////////////////////////////////////////////////////////
+// Compilation informations.
+////////////////////////////////////////////////////////////////////////////////
+
 /**
  * \defgroup compilation_group Compilation informations
  * \ingroup infos_group
  * \brief Compilation characteristics.
+ * \since version `1.0.0`
  *
  * This module contains compilation information which can be obtained as
  * strings:
@@ -69,10 +113,62 @@
  * Do note that some of these informations are gathered at compilation time.
  */
 
+//----------------------------------------------------------------------------//
+
+/**
+ * \brief Get the compiler name and version as a string.
+ * \ingroup compilation_group
+ * \since version `1.0.0`
+ *
+ * \return String representation of the compiler.
+ */
+const char * noclock_compiler (void);
+
+/**
+ * \brief Get the date of compilation as a string.
+ * \ingroup compilation_group
+ * \since version `1.0.0`
+ *
+ * \return String representation of the date of compilation.
+ */
+const char * noclock_compiling_date (void);
+
+/**
+ * \brief Get the name of the user as a string.
+ * \ingroup compilation_group
+ * \since version `1.0.0`
+ *
+ * \return String representation of the user.
+ */
+const char * noclock_compiling_user (void);
+
+/**
+ * \brief Get the name of the host machine.
+ * \ingroup compilation_group
+ * \since version `1.0.0`
+ *
+ * \return String representation of the host machine.
+ */
+const char * noclock_compiling_host (void);
+
+/**
+ * \brief Get all compilation informations into a single string.
+ * \ingroup compilation_group
+ * \since version `1.0.0`
+ *
+ * \return String representation of the compilation informations.
+ */
+const char * noclock_compilation_informations (void);
+
+////////////////////////////////////////////////////////////////////////////////
+// Tools and libraries informations.
+////////////////////////////////////////////////////////////////////////////////
+
 /**
  * \defgroup version_group Versions
  * \ingroup infos_group
  * \brief All the versions.
+ * \since version `1.0.0`
  *
  * The versionning of No Clock is done following the rules of
  * Semantic Versionning.
@@ -94,107 +190,41 @@
  * Do note that some of these informations are gathered at compilation time.
  */
 
-////////////////////////////////////////////////////////////////////////////////
-// Static variables.
-////////////////////////////////////////////////////////////////////////////////
-
-/**
- * \brief The No Clock version major.
- * \ingroup version_group
- */
-static const unsigned int NOCLOCK_VERSION_MAJOR = 1;
-
-/**
- * \brief The No Clock version minor.
- * \ingroup version_group
- */
-static const unsigned int NOCLOCK_VERSION_MINOR = 0;
-
-/**
- * \brief The No Clock version patch.
- * \ingroup version_group
- */
-static const unsigned int NOCLOCK_VERSION_PATCH = 0;
-
-////////////////////////////////////////////////////////////////////////////////
-// No Clock version.
-////////////////////////////////////////////////////////////////////////////////
-
-/**
- * \brief Get the No Clock version as a string.
- * \return String representation of the current version.
- * \ingroup version_group
- */
-const char * noclock_version (void);
-
-////////////////////////////////////////////////////////////////////////////////
-// Compilation informations.
-////////////////////////////////////////////////////////////////////////////////
-
-/**
- * \brief Get the compiler name and version as a string.
- * \return String representation of the compiler.
- * \ingroup compilation_group
- */
-const char * noclock_compiler (void);
-
-/**
- * \brief Get the date of compilation as a string.
- * \return String representation of the date of compilation.
- * \ingroup compilation_group
- */
-const char * noclock_compiling_date (void);
-
-/**
- * \brief Get the name of the user as a string.
- * \return String representation of the user.
- * \ingroup compilation_group
- */
-const char * noclock_compiling_user (void);
-
-/**
- * \brief Get the name of the host machine.
- * \return String representation of the host machine.
- * \ingroup compilation_group
- */
-const char * noclock_compiling_host (void);
-
-/**
- * \brief Get all compilation informations into a single string.
- * \return String representation of the compilation informations.
- * \ingroup compilation_group
- */
-const char * noclock_compilation_informations (void);
-
-////////////////////////////////////////////////////////////////////////////////
-// Tools and libraries informations.
-////////////////////////////////////////////////////////////////////////////////
+//----------------------------------------------------------------------------//
 
 /**
  * \brief Get the ISL version.
- * \return String representation of the ISL version.
  * \ingroup version_group
+ * \since version `1.0.0`
+ *
+ * \return String representation of the ISL version.
  */
 const char * noclock_isl_version (void);
 
 /**
  * \brief Get the Yacc version.
- * \return String representation of the Yacc version.
  * \ingroup version_group
+ * \since version `1.0.0`
+ *
+ * \return String representation of the Yacc version.
  */
 const char * noclock_yacc_version (void);
 
 /**
  * \brief Get the Lex version.
- * \return String representation of the Lex version.
  * \ingroup version_group
+ * \since version `1.0.0`
+ *
+ * \return String representation of the Lex version.
  */
 const char * noclock_lex_version (void);
 
 /**
  * \brief Get the tools and libraries information into a single string.
- * \return String representation of tools and libraries versions.
  * \ingroup version_group
+ * \since version `1.0.0`
+ *
+ * \return String representation of tools and libraries versions.
  */
 const char * noclock_libraries_informations (void);
 

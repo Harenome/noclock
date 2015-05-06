@@ -4,7 +4,7 @@
  * \author Harenome RAZANAJATO RANAIVOARIVONY
  * \date 2015
  * \copyright MIT License
- * \version 1.0.0
+ * \since version `1.0.0`
  *
  * This file declares expression list utilities.
  *
@@ -76,35 +76,6 @@
  * ~~~
  */
 
-/**
- * \defgroup expression_list_management Constructors / Destructors
- * \ingroup expression_list_group
- * \brief Create or destroy ::expression_list lists.
- *
- * An ::expression_list node can be created using expression_list_alloc().
- *
- * An ::expression_list list must be destroyed using expression_list_free().
- * Lists can be copied using expression_list_copy().
- */
-
-/**
- * \defgroup expression_list_getter Getters
- * \ingroup expression_list_group
- * \brief Get properties of an ::expression_list list.
- */
-
-/**
- * \defgroup expression_list_operation Operations
- * \ingroup expression_list_group
- * \brief Operations ::expression_list lists.
- */
-
-/**
- * \defgroup expression_list_io Input / Output
- * \ingroup expression_list_group
- * \brief I/O on ::expression_list lists.
- */
-
 ////////////////////////////////////////////////////////////////////////////////
 // Structs, ennums, typedefs, etc.
 ////////////////////////////////////////////////////////////////////////////////
@@ -122,6 +93,19 @@ typedef struct expression_list
 ////////////////////////////////////////////////////////////////////////////////
 // Allocation, initialization, copy, cleaning, free.
 ////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * \defgroup expression_list_management Constructors / Destructors
+ * \ingroup expression_list_group
+ * \brief Create or destroy ::expression_list lists.
+ *
+ * An ::expression_list node can be created using expression_list_alloc().
+ *
+ * An ::expression_list list must be destroyed using expression_list_free().
+ * Lists can be copied using expression_list_copy().
+ */
+
+//----------------------------------------------------------------------------//
 
 /**
  * \brief Allocate an expression list.
@@ -161,6 +145,14 @@ expression_list * expression_list_copy (const expression_list * list);
 ////////////////////////////////////////////////////////////////////////////////
 
 /**
+ * \defgroup expression_list_getter Getters
+ * \ingroup expression_list_group
+ * \brief Get properties of an ::expression_list list.
+ */
+
+//----------------------------------------------------------------------------//
+
+/**
  * \brief Get the nth expression from an expression list.
  * \relates expression_list
  * \ingroup expression_list_getter
@@ -185,8 +177,16 @@ expression_list * expression_list_n (expression_list * list, size_t n);
 size_t expression_list_size (expression_list * list);
 
 ////////////////////////////////////////////////////////////////////////////////
-// Modifications.
+// Operations.
 ////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * \defgroup expression_list_operation Operations
+ * \ingroup expression_list_group
+ * \brief Operations ::expression_list lists.
+ */
+
+//----------------------------------------------------------------------------//
 
 /**
  * \brief Append an expression to an expression list.
@@ -266,6 +266,14 @@ expression_list * expression_list_strip (expression_list * list);
 ////////////////////////////////////////////////////////////////////////////////
 // Input/Output.
 ////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * \defgroup expression_list_io Input / Output
+ * \ingroup expression_list_group
+ * \brief I/O on ::expression_list lists.
+ */
+
+//----------------------------------------------------------------------------//
 
 /**
  * \brief Write an expression list to an output stream.

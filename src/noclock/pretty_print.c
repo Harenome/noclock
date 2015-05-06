@@ -4,7 +4,7 @@
  * \author Harenome RAZANAJATO RANAIVOARIVONY
  * \date 2015
  * \copyright MIT License
- * \version 1.0.0
+ * \since version `1.0.0`
  *
  * This file defines the contents of the \ref pretty_printing_group module
  * and its child modules \ref pretty_printing_colours and
@@ -60,21 +60,25 @@
 
 /**
  * \brief The current colour state.
+ * \since version `1.0.0`
  */
 static bool colour_state = false;
 
 /**
  * \brief The current indentation level.
+ * \since version `1.0.0`
  */
 static size_t indentation_level = 0;
 
 /**
  * \brief The current indentation style.
+ * \since version `1.0.0`
  */
 static pp_indent_style indentation_style = INDENT_SPACES;
 
 /**
  * \brief The indentation style string representations.
+ * \since version `1.0.0`
  *
  * \warning Do not forget to edit this array accordingly when adding new
  * values (or modifying them) to the ::pp_indent_style enum!
@@ -99,6 +103,8 @@ static const char * indentation_strings[] =
 
 /**
  * \brief Fix pp_indent_style values, if necessary.
+ * \since version `1.0.0`
+ *
  * \param style The value to fix.
  * \return The fixed value.
  */

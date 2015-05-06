@@ -4,7 +4,7 @@
  * \author Harenome RAZANAJATO RANAIVOARIVONY
  * \date 2015
  * \copyright MIT License
- * \version 1.0.0
+ * \since version `1.0.0`
  *
  * This file defines the contents of the \ref expression_list_group module.
  */

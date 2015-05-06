@@ -4,7 +4,7 @@
  * \author Harenome RAZANAJATO RANAIVOARIVONY
  * \date 2015
  * \copyright MIT License
- * \version 1.0.0
+ * \since version `1.0.0`
  */
 
 /* The MIT License (MIT)
@@ -47,6 +47,7 @@
  * \defgroup noclock_to_isl_group No Clock to ISL conversions.
  * \ingroup conversion_group
  * \brief Convert No Clock to ISL.
+ * \since version `1.0.0`
  */
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -55,12 +56,14 @@
 
 /**
  * \brief Convert a No Clock AST to an ISL list of sets.
+ * \ingroup noclock_to_isl_group
+ * \since version `1.0.0`
+ *
  * \param ctx ISL ctx.
  * \param parameters Parameters.
  * \param instructions No Clock AST.
  * \param s Instruction names.
  * \return ISL list of sets.
- * \ingroup noclock_to_isl_group
  */
 isl_set_list * program_to_set_list (isl_ctx* ctx,
         const string_list * parameters, const instruction_list * instructions,
@@ -68,9 +71,11 @@ isl_set_list * program_to_set_list (isl_ctx* ctx,
 
 /**
  * \brief Merge ISL sets into an union.
+ * \ingroup noclock_to_isl_group
+ * \since version `1.0.0`
+ *
  * \param list ISL sets.
  * \return Union of the sets.
- * \ingroup noclock_to_isl_group
  */
 isl_union_set * union_set_list (isl_set_list * list);
 

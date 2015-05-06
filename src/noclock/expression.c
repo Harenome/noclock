@@ -4,7 +4,7 @@
  * \author Harenome RAZANAJATO RANAIVOARIVONY
  * \date 2015
  * \copyright MIT License
- * \version 1.0.0
+ * \since version `1.0.0`
  *
  * Conversion ::expression -> const char *
  * --------------------------------------------
@@ -50,6 +50,7 @@
 
 /**
  * \brief The expression type string representations.
+ * \since version `1.0.0`
  *
  * \warning Do not forget to edit this array accordingly when adding new
  * values (or modifying them) to the ::expression_type enum!
@@ -103,6 +104,8 @@ static const char * expression_type_strings[] =
 
 /**
  * \brief Keep the first expression, free the second one.
+ * \since version `1.0.0`
+ *
  * \param keep The expression to keep.
  * \param ditch The expression to ditch.
  * \return The kept expression.
@@ -111,6 +114,8 @@ static inline expression * keep_first (expression * keep, expression * ditch);
 
 /**
  * \brief Keep the second expression, free the first one.
+ * \since version `1.0.0`
+ *
  * \param ditch The expression to ditch.
  * \param keep The expression to keep.
  * \return The kept expression.
@@ -119,6 +124,8 @@ static inline expression * ditch_first (expression * ditch, expression * keep);
 
 /**
  * \brief Function to execute when both expressions are number.
+ * \since version `1.0.0`
+ *
  * \param a First operand.
  * \param b Second operand.
  * \param t Operation.
@@ -129,6 +136,8 @@ static inline expression * both_numbers (expression * a, expression * b,
 
 /**
  * \brief Set up a binary expression.
+ * \since version `1.0.0`
+ *
  * \param e Target expression.
  * \param a First operand.
  * \param b Second operand.
@@ -140,6 +149,8 @@ static inline void expression_set_binary (expression * e, expression * left,
 
 /**
  * \brief Attempt to fold expressions.
+ * \since version `1.0.0`
+ *
  * \param number Number to fold.
  * \param target Target expression.
  * \param t Operation.
@@ -151,6 +162,8 @@ static bool attempt_to_fold (long int number, expression * target,
 
 /**
  * \brief Attempt to fold, set up a binary expression in case of failure.
+ * \since version `1.0.0`
+ *
  * \param a Left operand.
  * \param b Right operand.
  * \param t Operation.
@@ -161,6 +174,8 @@ static expression * fold_or_operation (expression * a, expression * b,
 
 /**
  * \brief Convert an expression type to a string.
+ * \since version `1.0.0`
+ *
  * \param t Type
  * \return String representation of the type.
  */

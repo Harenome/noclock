@@ -4,7 +4,7 @@
  * \author Harenome RAZANAJATO RANAIVOARIVONY
  * \date 2015
  * \copyright MIT License
- * \version 1.0.0
+ * \since version `1.0.0`
  *
  * This file defines the contents of the \ref verbose_group module.
  *
@@ -48,6 +48,7 @@
 
 /**
  * \brief The current state of the verbose mode.
+ * \since version `1.0.0`
  */
 static bool verbose_mode = false;
 

@@ -4,7 +4,7 @@
  * \author Harenome RAZANAJATO RANAIVOARIVONY
  * \date 2015
  * \copyright MIT License
- * \version 1.0.0
+ * \since version `1.0.0`
  *
  * This header file declares debugging utilities.
  *
@@ -49,6 +49,7 @@
 /**
  * \defgroup debug_group Debugging
  * \brief Print debugging information.
+ * \since version `1.0.0`
  *
  * The debugging mode is determined at compilation time. One can inspect its
  * state using debug_mode_state().
@@ -73,9 +74,11 @@
 
 /**
  * \brief Determine whether the debug mode has been enabled at compile time.
+ * \ingroup debug_group
+ * \since version `1.0.0`
+ *
  * \retval true if the debug mode is enabled.
  * \retval false otherwise.
- * \ingroup debug_group
  */
 bool debug_mode_state (void);
 
@@ -85,45 +88,57 @@ bool debug_mode_state (void);
 
 /**
  * \brief printf(3) when DEBUG is defined.
- * \param format The format string.
- * \retval 0 if DEBUG is not defined
- * \return The number of written characters.
- * \see printf(3)
  * \ingroup debug_group
+ * \since version `1.0.0`
+ *
+ * \param format The format string.
+ * \return The number of written characters.
+ * \retval 0 if DEBUG is not defined
+ *
+ * \see printf(3)
  */
 int debug (const char * format, ...);
 
 /**
  * \brief fprintf(3) when DEBUG is defined.
+ * \ingroup debug_group
+ * \since version `1.0.0`
+ *
  * \param stream The destination stream.
  * \param format The format string.
- * \retval 0 if DEBUG is not defined
  * \return The number of written characters.
+ * \retval 0 if DEBUG is not defined
+ *
  * \see fprintf(3)
- * \ingroup debug_group
  */
 int fdebug (FILE * stream, const char * format, ...);
 
 /**
  * \brief sprintf(3) when DEBUG is defined.
+ * \ingroup debug_group
+ * \since version `1.0.0`
+ *
  * \param str The destination string.
  * \param format The format string.
- * \retval 0 if DEBUG is not defined
  * \return The number of written characters.
+ * \retval 0 if DEBUG is not defined
+ *
  * \see sprintf(3)
- * \ingroup debug_group
  */
 int sdebug (char * str, const char * format, ...);
 
 /**
  * \brief snprintf(3) when DEBUG is defined.
+ * \ingroup debug_group
+ * \since version `1.0.0`
+ *
  * \param str The destination string.
  * \param size The maximum number of characters to write.
  * \param format The format string.
- * \retval 0 if DEBUG is not defined
  * \return The number of written characters.
+ * \retval 0 if DEBUG is not defined
+ *
  * \see snprintf(3)
- * \ingroup debug_group
  */
 int sndebug (char * str, size_t size, const char * format, ...);
 
