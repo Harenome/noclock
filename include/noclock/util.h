@@ -4,7 +4,7 @@
  * \author Harenome RAZANAJATO RANAIVOARIVONY
  * \date 2015
  * \copyright MIT License
- * \version 1.0.0
+ * \since version `1.0.0`
  */
 
 /* The MIT License (MIT)
@@ -38,6 +38,19 @@
 #include <unistd.h>
 #include <sysexits.h>
 
+/**
+ * \brief Macro for forbidding things.
+ *
+ * \param comp Comparator.
+ * \param variable Variable which holds the result to compare.
+ * \param result The forbidden result.
+ * \param error_message The message for `perror(3)`.
+ * \param exit_code The exit code for `exit(3)`.
+ *
+ * \details This macro compares a \a variable to a forbidden \a result using
+ * the comparator \a comp. If this comparison succeeds, the \a error_message
+ * is used with `perror(3)` and the program exits with the \a exit_code.
+ */
 #define __forbid_comp(comp, variable, result, error_message, exit_code) \
     if ((variable) comp (result)) \
     { \
@@ -45,34 +58,114 @@
         exit ((exit_code)); \
     }
 
+/**
+ * \brief Forbid a value.
+ *
+ * \param variable Variable which holds the value.
+ * \param result The forbidden value.
+ * \param error_message The message for `perror(3)`.
+ * \param exit_code The exit code for `exit(3)`.
+ */
 #define __forbid_value(variable, result, error_message, exit_code) \
     __forbid_comp (==, variable, result, error_message, exit_code)
 
+/**
+ * \brief Forbid a value to be lower than a value.
+ *
+ * \param variable Variable which holds the value.
+ * \param result The forbidden value.
+ * \param error_message The message for `perror(3)`.
+ * \param exit_code The exit code for `exit(3)`.
+ */
 #define __forbid_lower(variable, result, error_message, exit_code) \
     __forbid_comp (<, variable, result, error_message, exit_code)
 
+/**
+ * \brief Forbid a value to be greater than a value.
+ *
+ * \param variable Variable which holds the value.
+ * \param result The forbidden value.
+ * \param error_message The message for `perror(3)`.
+ * \param exit_code The exit code for `exit(3)`.
+ */
 #define __forbid_greater(variable, result, error_message, exit_code) \
     __forbid_comp (>, variable, result, error_message, exit_code)
 
+/**
+ * \brief Forbid a variable to be lower or equal to a value.
+ *
+ * \param variable Variable which holds the value.
+ * \param result The forbidden value.
+ * \param error_message The message for `perror(3)`.
+ * \param exit_code The exit code for `exit(3)`.
+ */
 #define __forbid_lower_equal(variable, result, error_message, exit_code) \
     __forbid_comp (<=, variable, result, error_message, exit_code)
 
+/**
+ * \brief Forbid a variable to be greater or equal to a value.
+ *
+ * \param variable Variable which holds the value.
+ * \param result The forbidden value.
+ * \param error_message The message for `perror(3)`.
+ * \param exit_code The exit code for `exit(3)`.
+ */
 #define __forbid_greater_equal(variable, result, error_message, exit_code) \
     __forbid_comp (>=, variable, result, error_message, exit_code)
 
+/**
+ * \brief Expect a variable to be equal to a value.
+ *
+ * \param variable Variable which holds the value.
+ * \param result The expected value.
+ * \param error_message The message for `perror(3)`.
+ * \param exit_code The exit code for `exit(3)`.
+ */
 #define __expect_value(variable, result, error_message, exit_code) \
     __forbid_comp (!=, variable, result, error_message, exit_code)
 
-#define __expect_lower(variable, result, error_mesage, exit_code) \
+/**
+ * \brief Expect a variable to be lower than a value.
+ *
+ * \param variable Variable which holds the value.
+ * \param result The expected value.
+ * \param error_message The message for `perror(3)`.
+ * \param exit_code The exit code for `exit(3)`.
+ */
+#define __expect_lower(variable, result, error_message, exit_code) \
     __forbid_greater_equal (variable, result, error_message, exit_code)
 
-#define __expect_lower_equal(variable, result, error_mesage, exit_code) \
+/**
+ * \brief Expect a variable to be lower or equal to a value.
+ *
+ * \param variable Variable which holds the value.
+ * \param result The expected value.
+ * \param error_message The message for `perror(3)`.
+ * \param exit_code The exit code for `exit(3)`.
+ */
+#define __expect_lower_equal(variable, result, error_message, exit_code) \
     __forbid_greater (variable, result, error_message, exit_code)
 
-#define __expect_greater(variable, result, error_mesage, exit_code) \
+/**
+ * \brief Expect a variable to be greater than a value.
+ *
+ * \param variable Variable which holds the value.
+ * \param result The expected value.
+ * \param error_message The message for `perror(3)`.
+ * \param exit_code The exit code for `exit(3)`.
+ */
+#define __expect_greater(variable, result, error_message, exit_code) \
     __forbid_lower_equal (variable, result, error_message, exit_code)
 
-#define __expect_greater_equal(variable, result, error_mesage, exit_code) \
+/**
+ * \brief Expect a variable to be greater or equal to a value.
+ *
+ * \param variable Variable which holds the value.
+ * \param result The expected value.
+ * \param error_message The message for `perror(3)`.
+ * \param exit_code The exit code for `exit(3)`.
+ */
+#define __expect_greater_equal(variable, result, error_message, exit_code) \
     __forbid_lower (variable, result, error_message, exit_code)
 
 #endif /* __UTIL_H__ */

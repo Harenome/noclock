@@ -4,7 +4,7 @@
  * \author Harenome RAZANAJATO RANAIVOARIVONY
  * \date 2015
  * \copyright MIT License
- * \version 1.0.0
+ * \since version `1.0.0`
  *
  * This header file declares pretty printing utilities.
  *
@@ -47,7 +47,7 @@
 
 /**
  * \defgroup pretty_printing_group Pretty Printing
- * \since version 1.0.0
+ * \since version `1.0.0`
  *
  * \brief Pretty print text.
  *
@@ -57,10 +57,166 @@
  * - colours: see the \ref pretty_printing_colours module.
  */
 
+////////////////////////////////////////////////////////////////////////////////
+// Macros.
+////////////////////////////////////////////////////////////////////////////////
+
+// System modificators.
+// =============================================================================
+
+/**
+ * \brief Reset terminal text modifications.
+ * \ingroup pretty_printing_colours
+ * \since version `1.0.0`
+ */
+#define PP_RESET "\x1B[0m"
+
+/**
+ * \brief Bold terminal text.
+ * \ingroup pretty_printing_colours
+ * \since version `1.0.0`
+ */
+#define PP_BOLD "\x1B[1m"
+
+// System colours.
+// =============================================================================
+
+/**
+ * \brief Use the system black colour.
+ * \ingroup pretty_printing_colours
+ * \since version `1.0.0`
+ */
+#define PP_BLACK "\x1B[30m"
+
+/**
+ * \brief Use the system red colour.
+ * \ingroup pretty_printing_colours
+ * \since version `1.0.0`
+ */
+#define PP_RED "\x1B[31m"
+
+/**
+ * \brief Use the system green colour.
+ * \ingroup pretty_printing_colours
+ * \since version `1.0.0`
+ */
+#define PP_GREEN "\x1B[32m"
+
+/**
+ * \brief Use the system yellow colour.
+ * \ingroup pretty_printing_colours
+ * \since version `1.0.0`
+ */
+#define PP_YELLOW "\x1B[33m"
+
+/**
+ * \brief Use the system blue colour.
+ * \ingroup pretty_printing_colours
+ * \since version `1.0.0`
+ */
+#define PP_BLUE "\x1B[34m"
+
+/**
+ * \brief Use the system purple colour.
+ * \ingroup pretty_printing_colours
+ * \since version `1.0.0`
+ */
+#define PP_PURPLE "\x1B[35m"
+
+/**
+ * \brief Use the system cyan colour.
+ * \ingroup pretty_printing_colours
+ * \since version `1.0.0`
+ */
+#define PP_CYAN "\x1B[36m"
+
+/**
+ * \brief Use the system grey colour.
+ * \ingroup pretty_printing_colours
+ * \since version `1.0.0`
+ */
+#define PP_GREY "\x1B[37m"
+
+/**
+ * \brief Alias for #PP_GREY
+ * \ingroup pretty_printing_colours
+ * \since version `1.0.0`
+ */
+#define PP_GRAY PP_GREY
+
+// Pretty printer macros.
+// =============================================================================
+
+/**
+ * \brief Colour for normal keywords (for, if, etc.)
+ * \ingroup pretty_printing_colours
+ * \since version `1.0.0`
+ */
+#define PP_KEYWORD PP_BOLD PP_BLUE
+
+/**
+ * \brief Colour for special keywords (finish, async)
+ * \ingroup pretty_printing_colours
+ * \since version `1.0.0`
+ */
+#define PP_KEYWORD_SPECIAL PP_BOLD PP_CYAN
+
+/**
+ * \brief Colour for the keywords this program aims to remove (clocked, advance)
+ * \ingroup pretty_printing_colours
+ * \since version `1.0.0`
+ */
+#define PP_KEYWORD_NOT_WANTED PP_BOLD PP_RED
+
+/**
+ * \brief Colour for identifiers.
+ * \ingroup pretty_printing_colours
+ * \since version `1.0.0`
+ */
+#define PP_IDENTIFIER PP_YELLOW
+
+/**
+ * \brief Colour for function calls.
+ * \ingroup pretty_printing_colours
+ * \since version `1.0.0`
+ */
+#define PP_CALL PP_BOLD PP_IDENTIFIER
+
+
+/**
+ * \brief Colour for constants.
+ * \ingroup pretty_printing_colours
+ * \since version `1.0.0`
+ */
+#define PP_CONSTANT PP_GREEN
+
+////////////////////////////////////////////////////////////////////////////////
+// Structs, ennums, typedefs, etc.
+////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * \brief Indentation styles.
+ * \ingroup pretty_printing_indent
+ * \since version `1.0.0`
+ */
+typedef enum pp_indent_style
+{
+    /* Please check the pretty_print.c file when modifying this enum. */
+    INDENT_SPACES,      /**< Indent with spaces. */
+    INDENT_TABS,        /**< Indent with tabs. */
+
+    /* Always leave the INDENT_UNKNOWN at the end! */
+    INDENT_UNKNOWN,     /**< Unknown indent style. */
+} pp_indent_style;
+
+////////////////////////////////////////////////////////////////////////////////
+// Colour management.
+////////////////////////////////////////////////////////////////////////////////
+
 /**
  * \defgroup pretty_printing_colours Pretty Printing Colours
  * \ingroup pretty_printing_group
- * \since version 1.0.0
+ * \since version `1.0.0`
  *
  * \brief Use pretty colours.
  *
@@ -121,9 +277,182 @@
  *
  */
 
+//----------------------------------------------------------------------------//
+
+/**
+ * \brief Get the current colour state.
+ * \ingroup pretty_printing_colours
+ * \since version `1.0.0`
+ *
+ * \retval true if colours are enabled.
+ * \retval false otherwise.
+ */
+bool pretty_print_colour_state (void);
+
+/**
+ * \deprecated Please use pretty_print_colour_state().
+ *
+ * \brief Get the current colour state.
+ * \ingroup pretty_printing_colours
+ * \since version `1.0.0`
+ *
+ * \retval true if colours are enabled.
+ * \retval false otherwise.
+ *
+ * \note This is equivalent to:
+ * ~~~{.C}
+ * pretty_print_colour_state ();
+ * ~~~
+ *
+ * \see pretty_print_colour_state()
+ */
+static inline bool pretty_print_color_state (void)
+{
+    return pretty_print_colour_state ();
+}
+
+/**
+ * \deprecated Please use pretty_print_colour_state().
+ *
+ * \brief Get the current colour state.
+ * \ingroup pretty_printing_colours
+ * \since version `1.0.0`
+ *
+ * \retval true if colours are enabled.
+ * \retval false otherwise.
+ *
+ * \note This is equivalent to:
+ * ~~~{.C}
+ * pretty_print_colour_state ();
+ * ~~~
+ *
+ * \see pretty_print_colour_state()
+ */
+static inline bool pretty_print_colour_get_state (void)
+{
+    return pretty_print_colour_state ();
+}
+
+/**
+ * \deprecated Please use pretty_print_colour_state().
+ *
+ * \brief Get the current colour state.
+ * \ingroup pretty_printing_colours
+ * \since version `1.0.0`
+ *
+ * \retval true if colours are enabled.
+ * \retval false otherwise.
+ *
+ * \note This is equivalent to:
+ * ~~~{.C}
+ * pretty_print_colour_state ();
+ * ~~~
+ *
+ * \see pretty_print_colour_state()
+ */
+static inline bool pretty_print_color_get_state (void)
+{
+    return pretty_print_colour_state ();
+}
+
+/**
+ * \brief Set the colour state.
+ * \ingroup pretty_printing_colours
+ * \since version `1.0.0`
+ *
+ * \param state The desired colour state.
+ */
+void pretty_print_colour_set_state (bool state);
+
+/**
+ * \deprecated Please use pretty_print_colour_set_state().
+ *
+ * \brief Set the colour state.
+ * \ingroup pretty_printing_colours
+ * \since version `1.0.0`
+ *
+ * \param state The desired colour state.
+ *
+ * \note This is equivalent to:
+ * ~~~{.C}
+ * pretty_print_colour_set_state (state);
+ * ~~~
+ *
+ * \see pretty_print_colour_set_state()
+ */
+static inline void pretty_print_color_set_state (bool state)
+{
+    pretty_print_colour_set_state (state);
+}
+
+/**
+ * \brief Enable colours.
+ * \ingroup pretty_printing_colours
+ * \since version `1.0.0`
+ *
+ * \note This is equivalent to:
+ * ~~~{.C}
+ * pretty_print_colour_set_state (true)
+ * ~~~
+ */
+void pretty_print_colour_enable (void);
+
+/**
+ * \deprecated Please use pretty_print_colour_enable().
+ *
+ * \brief Enable colours.
+ * \ingroup pretty_printing_colours
+ * \since version `1.0.0`
+ *
+ * \note This is equivalent to:
+ * ~~~{.C}
+ * pretty_print_colour_set_state (true)
+ * ~~~
+ *
+ * \see pretty_print_colour_enable()
+ */
+static inline void pretty_print_color_enable (void)
+{
+    pretty_print_colour_enable ();
+}
+
+/**
+ * \brief Disable colours.
+ * \ingroup pretty_printing_colours
+ * \since version `1.0.0`
+ *
+ * \note This is equivalent to:
+ * ~~~{.C}
+ * pretty_print_colour_set_state (false)
+ * ~~~
+ */
+void pretty_print_colour_disable (void);
+
+/**
+ * \brief Disable colours.
+ * \ingroup pretty_printing_colours
+ * \since version `1.0.0`
+ *
+ * \note This is equivalent to:
+ * ~~~{.C}
+ * pretty_print_colour_set_state (false)
+ * ~~~
+ *
+ * \see pretty_print_colour_disable()
+ */
+static inline void pretty_print_color_disable (void)
+{
+    pretty_print_colour_disable ();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Indentation management.
+////////////////////////////////////////////////////////////////////////////////
+
 /**
  * \defgroup pretty_printing_indent Pretty Printing Indentation
  * \ingroup pretty_printing_group
+ * \since version `1.0.0`
  *
  * \brief Display pretty indentation.
  *
@@ -180,312 +509,36 @@
  *
  */
 
-////////////////////////////////////////////////////////////////////////////////
-// Macros.
-////////////////////////////////////////////////////////////////////////////////
-
-// System modificators.
-// =============================================================================
-
-/**
- * \brief Reset terminal text modifications.
- * \ingroup pretty_printing_colours
- */
-#define PP_RESET "\x1B[0m"
-
-/**
- * \brief Bold terminal text.
- * \ingroup pretty_printing_colours
- */
-#define PP_BOLD "\x1B[1m"
-
-// System colours.
-// =============================================================================
-
-/**
- * \brief Use the system black colour.
- * \ingroup pretty_printing_colours
- */
-#define PP_BLACK "\x1B[30m"
-
-/**
- * \brief Use the system red colour.
- * \ingroup pretty_printing_colours
- */
-#define PP_RED "\x1B[31m"
-
-/**
- * \brief Use the system green colour.
- * \ingroup pretty_printing_colours
- */
-#define PP_GREEN "\x1B[32m"
-
-/**
- * \brief Use the system yellow colour.
- * \ingroup pretty_printing_colours
- */
-#define PP_YELLOW "\x1B[33m"
-
-/**
- * \brief Use the system blue colour.
- * \ingroup pretty_printing_colours
- */
-#define PP_BLUE "\x1B[34m"
-
-/**
- * \brief Use the system purple colour.
- * \ingroup pretty_printing_colours
- */
-#define PP_PURPLE "\x1B[35m"
-
-/**
- * \brief Use the system cyan colour.
- * \ingroup pretty_printing_colours
- */
-#define PP_CYAN "\x1B[36m"
-
-/**
- * \brief Use the system grey colour.
- * \ingroup pretty_printing_colours
- */
-#define PP_GREY "\x1B[37m"
-
-/**
- * \brief Alias for #PP_GREY
- * \ingroup pretty_printing_colours
- */
-#define PP_GRAY PP_GREY
-
-// Pretty printer macros.
-// =============================================================================
-
-/**
- * \brief Colour for normal keywords (for, if, etc.)
- * \ingroup pretty_printing_colours
- */
-#define PP_KEYWORD PP_BOLD PP_BLUE
-
-/**
- * \brief Colour for special keywords (finish, async)
- * \ingroup pretty_printing_colours
- */
-#define PP_KEYWORD_SPECIAL PP_BOLD PP_CYAN
-
-/**
- * \brief Colour for the keywords this program aims to remove (clocked, advance)
- * \ingroup pretty_printing_colours
- */
-#define PP_KEYWORD_NOT_WANTED PP_BOLD PP_RED
-
-/**
- * \brief Colour for identifiers.
- * \ingroup pretty_printing_colours
- */
-#define PP_IDENTIFIER PP_YELLOW
-
-/**
- * \brief Colour for function calls.
- * \ingroup pretty_printing_colours
- */
-#define PP_CALL PP_BOLD PP_IDENTIFIER
-
-
-/**
- * \brief Colour for constants.
- * \ingroup pretty_printing_colours
- */
-#define PP_CONSTANT PP_GREEN
-
-////////////////////////////////////////////////////////////////////////////////
-// Structs, ennums, typedefs, etc.
-////////////////////////////////////////////////////////////////////////////////
-
-/**
- * \brief Indentation styles.
- * \ingroup pretty_printing_indent
- */
-typedef enum pp_indent_style
-{
-    /* Please check the pretty_print.c file when modifying this enum. */
-    INDENT_SPACES,      /**< Indent with spaces. */
-    INDENT_TABS,        /**< Indent with tabs. */
-
-    /* Always leave the INDENT_UNKNOWN at the end! */
-    INDENT_UNKNOWN,     /**< Unknown indent style. */
-} pp_indent_style;
-
-////////////////////////////////////////////////////////////////////////////////
-// Colour management.
-////////////////////////////////////////////////////////////////////////////////
-
-/**
- * \brief Get the current colour state.
- * \retval true if colours are enabled.
- * \retval false otherwise.
- * \ingroup pretty_printing_colours
- */
-bool pretty_print_colour_state (void);
-
-/**
- * \brief Get the current colour state.
- * \retval true if colours are enabled.
- * \retval false otherwise.
- * \ingroup pretty_printing_colours
- * \see pretty_print_colour_state()
- *
- * \note This is equivalent to:
- * ~~~{.C}
- * pretty_print_colour_state ();
- * ~~~
- *
- */
-static inline bool pretty_print_color_state (void)
-{
-    return pretty_print_colour_state ();
-}
-
-/**
- * \brief Get the current colour state.
- * \retval true if colours are enabled.
- * \retval false otherwise.
- * \ingroup pretty_printing_colours
- * \see pretty_print_colour_state()
- *
- * \note This is equivalent to:
- * ~~~{.C}
- * pretty_print_colour_state ();
- * ~~~
- *
- */
-static inline bool pretty_print_colour_get_state (void)
-{
-    return pretty_print_colour_state ();
-}
-
-/**
- * \brief Get the current colour state.
- * \retval true if colours are enabled.
- * \retval false otherwise.
- * \ingroup pretty_printing_colours
- * \see pretty_print_colour_state()
- *
- * \note This is equivalent to:
- * ~~~{.C}
- * pretty_print_colour_state ();
- * ~~~
- *
- */
-static inline bool pretty_print_color_get_state (void)
-{
-    return pretty_print_colour_state ();
-}
-
-/**
- * \brief Set the colour state.
- * \param state The desired colour state.
- * \ingroup pretty_printing_colours
- */
-void pretty_print_colour_set_state (bool state);
-
-/**
- * \brief Set the colour state.
- * \param state The desired colour state.
- * \ingroup pretty_printing_colours
- * \see pretty_print_colour_set_state()
- *
- * \note This is equivalent to:
- * ~~~{.C}
- * pretty_print_colour_set_state (state);
- * ~~~
- *
- */
-static inline void pretty_print_color_set_state (bool state)
-{
-    pretty_print_colour_set_state (state);
-}
-
-/**
- * \brief Enable colours.
- * \ingroup pretty_printing_colours
- *
- * \note This is equivalent to:
- * ~~~{.C}
- * pretty_print_colour_set_state (true)
- * ~~~
- *
- */
-void pretty_print_colour_enable (void);
-
-/**
- * \brief Enable colours.
- * \see pretty_print_colour_enable()
- * \ingroup pretty_printing_colours
- *
- * \note This is equivalent to:
- * ~~~{.C}
- * pretty_print_colour_set_state (true)
- * ~~~
- *
- */
-static inline void pretty_print_color_enable (void)
-{
-    pretty_print_colour_enable ();
-}
-
-/**
- * \brief Disable colours.
- * \ingroup pretty_printing_colours
- *
- * \note This is equivalent to:
- * ~~~{.C}
- * pretty_print_colour_set_state (false)
- * ~~~
- *
- */
-void pretty_print_colour_disable (void);
-
-/**
- * \brief Disable colours.
- * \see pretty_print_colour_disable()
- * \ingroup pretty_printing_colours
- *
- * \note This is equivalent to:
- * ~~~{.C}
- * pretty_print_colour_set_state (false)
- * ~~~
- *
- */
-static inline void pretty_print_color_disable (void)
-{
-    pretty_print_colour_disable ();
-}
-
-////////////////////////////////////////////////////////////////////////////////
-// Indentation management.
-////////////////////////////////////////////////////////////////////////////////
+//----------------------------------------------------------------------------//
 
 /**
  * \brief Get the current indentation style.
+ * \ingroup pretty_printing_indent
+ * \since version `1.0.0`
+ *
  * \retval ::INDENT_SPACES if the current indentation style is set to spaces.
  * \retval ::INDENT_TABS if the current indentation style is set to tabs.
  * \retval ::INDENT_UNKNOWN if the current indentation style is unknown.
- * \ingroup pretty_printing_indent
  */
 pp_indent_style pretty_print_indent_style (void);
 
 /**
+ * \deprecated Please use pretty_print_indent_style().
+ *
  * \brief Get the current indentation style.
+ * \ingroup pretty_printing_indent
+ * \since version `1.0.0`
+ *
  * \retval ::INDENT_SPACES if the current indentation style is set to spaces.
  * \retval ::INDENT_TABS if the current indentation style is set to tabs.
  * \retval ::INDENT_UNKNOWN if the current indentation style is unknown.
- * \ingroup pretty_printing_indent
- * \see pretty_print_indent_style()
  *
  * \note This is equivalent to:
  * ~~~{.C}
  * pretty_print_indent_style ();
  * ~~~
  *
+ * \see pretty_print_indent_style()
  */
 static inline pp_indent_style pretty_print_indent_get_style (void)
 {
@@ -494,29 +547,37 @@ static inline pp_indent_style pretty_print_indent_get_style (void)
 
 /**
  * \brief Set the indentation style.
- * \param style The desired indentation style.
  * \ingroup pretty_printing_indent
+ * \since version `1.0.0`
+ *
+ * \param style The desired indentation style.
  */
 void pretty_print_indent_set_style (pp_indent_style style);
 
 /**
  * \brief Get the string corresponding to an indent style.
- * \return Corresponding string.
  * \ingroup pretty_printing_indent
+ * \since version `1.0.0`
+ *
+ * \return Corresponding string.
  */
 const char * pretty_print_indent_style_string (pp_indent_style style);
 
 /**
+ * \deprecated Plase use pretty_print_indent_style_string().
+ *
  * \brief Get the string corresponding to an indent style.
- * \return Corresponding string.
- * \see pretty_print_indent_style_string()
  * \ingroup pretty_printing_indent
+ * \since version `1.0.0`
+ *
+ * \return Corresponding string.
  *
  * \note This is equivalent to:
  * ~~~{.C}
  * pretty_print_indent_style_string (style);
  * ~~~
  *
+ * \see pretty_print_indent_style_string()
  */
 static inline const char * pretty_print_indent_get_style_string
         (pp_indent_style style)
@@ -526,22 +587,28 @@ static inline const char * pretty_print_indent_get_style_string
 
 /**
  * \brief Get the current indentation level.
- * \return The current indentation level.
  * \ingroup pretty_printing_indent
+ * \since version `1.0.0`
+ *
+ * \return The current indentation level.
  */
 size_t pretty_print_indent_level (void);
 
 /**
+ * \deprecated Please use pretty_print_indent_level().
+ *
  * \brief Get the current indentation level.
- * \return The current indentation level.
  * \ingroup pretty_printing_indent
- * \see pretty_print_indent_level()
+ * \since version `1.0.0`
+ *
+ * \return The current indentation level.
  *
  * \note This is equivalent to:
  * ~~~{.C}
  * pretty_print_indent_level ();
  * ~~~
  *
+ * \see pretty_print_indent_level()
  */
 static inline size_t pretty_print_indent_get_level (void)
 {
@@ -551,34 +618,44 @@ static inline size_t pretty_print_indent_get_level (void)
 /**
  * \brief Increase the indentation level.
  * \ingroup pretty_printing_indent
+ * \since version `1.0.0`
  */
 void pretty_print_indent_increase (void);
 
 /**
  * \brief Decrease the indentation level.
  * \ingroup pretty_printing_indent
+ * \since version `1.0.0`
  */
 void pretty_print_indent_decrease (void);
 
 /**
  * \brief Indent the current line of a stream.
+ * \ingroup pretty_printing_indent
+ * \since version `1.0.0`
+ *
  * \param f Stream.
+ *
  * \pre The line of the stream should be empty for proper indentation.
+ *
  * \note If the indentation style is set to INDENT_UNKNOWN, the current
  * implementation defaults to INDENT_SPACES. This behaviour may be subject to
  * change.
- * \ingroup pretty_printing_indent
  */
 void pretty_print_indent_fprint (FILE * f);
 
 /**
  * \brief Get a string that represents the current level of indentation.
+ * \ingroup pretty_printing_indent
+ * \since version `1.0.0`
+ *
  * \return A string of indentation.
+ *
+ * \warning The resulting string is malloc'd. It is up to the user to free it.
+ *
  * \note If the indentation style is set to INDENT_UNKNOWN, the current
  * implementation defaults to INDENT_SPACES. This behaviour may be subject to
  * change.
- * \warning The resulting string is malloc'd. It is up to the user to free it.
- * \ingroup pretty_printing_indent
  */
 char * pretty_print_indent_to_string (void);
 

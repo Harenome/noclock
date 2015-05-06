@@ -4,7 +4,7 @@
  * \author Harenome RAZANAJATO RANAIVOARIVONY
  * \date 2015
  * \copyright MIT License
- * \version 1.0.0
+ * \since version `1.0.0`
  */
 
 /* The MIT License (MIT)
@@ -32,6 +32,22 @@
 
 #include "noclock/string_list.h"
 
+////////////////////////////////////////////////////////////////////////////////
+// Static functions declarations.
+////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * \brief Grow a string list.
+ * \since version `1.0.0`
+ *
+ * \param list String list to grow.
+ */
+static inline void string_list_grow (string_list * list);
+
+////////////////////////////////////////////////////////////////////////////////
+// Allocation, initialization, copy, cleaning, free.
+////////////////////////////////////////////////////////////////////////////////
+
 void string_list_init (string_list * list)
 {
     list->length = 0;
@@ -46,21 +62,9 @@ void string_list_clean (string_list * list)
     free (list->list);
     string_list_init (list);
 }
-
-static inline void string_list_grow (string_list * list)
-{
-    static const size_t step = 8;
-
-    size_t new_size = list->size + step;
-    char ** new_list = realloc (list->list,
-            (list->size + step) * sizeof * new_list);
-
-    if (new_list != NULL)
-    {
-        list->list = new_list;
-        list->size = new_size;
-    }
-}
+////////////////////////////////////////////////////////////////////////////////
+// Operations.
+////////////////////////////////////////////////////////////////////////////////
 
 size_t string_list_append (string_list * list, const char * parameter)
 {
@@ -72,6 +76,10 @@ size_t string_list_append (string_list * list, const char * parameter)
 
     return list->length - 1;
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// Getters.
+////////////////////////////////////////////////////////////////////////////////
 
 ssize_t string_list_index (string_list * list, const char * parameter)
 {
@@ -91,6 +99,10 @@ const char * string_list_parameter (string_list * list, ssize_t place)
 
     return list->list[place];
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// Input/Output.
+////////////////////////////////////////////////////////////////////////////////
 
 void string_list_fprint (FILE * f, const string_list * list)
 {
@@ -114,3 +126,23 @@ char * string_list_to_string (const string_list * list)
 
     return buffer;
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// Static functions definitions.
+////////////////////////////////////////////////////////////////////////////////
+
+void string_list_grow (string_list * list)
+{
+    static const size_t step = 8;
+
+    size_t new_size = list->size + step;
+    char ** new_list = realloc (list->list,
+            (list->size + step) * sizeof * new_list);
+
+    if (new_list != NULL)
+    {
+        list->list = new_list;
+        list->size = new_size;
+    }
+}
+

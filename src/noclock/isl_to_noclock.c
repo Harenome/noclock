@@ -4,7 +4,7 @@
  * \author Harenome RAZANAJATO RANAIVOARIVONY
  * \date 2015
  * \copyright MIT License
- * \version 1.0.0
+ * \since version `1.0.0`
  */
 
 /* The MIT License (MIT)
@@ -36,7 +36,10 @@
 // Static functions.
 ////////////////////////////////////////////////////////////////////////////////
 
-/** * \brief Convert a for loop.
+/**
+ * \brief Convert a for loop.
+ * \since version `1.0.0`
+ *
  * \param for_node Input loop.
  * \return Output loop.
  */
@@ -44,6 +47,8 @@ static instruction_list * isl_for_to_noclock (isl_ast_node * for_node);
 
 /**
  * \brief Convert a if then else branch.
+ * \since version `1.0.0`
+ *
  * \param for_node Input branch.
  * \return Output branch.
  */
@@ -51,6 +56,8 @@ static instruction_list * isl_if_to_noclock (isl_ast_node * if_node);
 
 /**
  * \brief Convert a block.
+ * \since version `1.0.0`
+ *
  * \param for_node Input block.
  * \return Output block.
  */
@@ -58,6 +65,8 @@ static instruction_list * isl_block_to_noclock (isl_ast_node * block_node);
 
 /**
  * \brief Convert a call.
+ * \since version `1.0.0`
+ *
  * \param for_node Input call.
  * \return Output call.
  */
@@ -65,6 +74,8 @@ static instruction_list * isl_user_to_noclock (isl_ast_node * user_node);
 
 /**
  * \brief Convert an initialization.
+ * \since version `1.0.0`
+ *
  * \param for_node Input initialization.
  * \return Output initialization.
  */
@@ -72,6 +83,8 @@ static expression * isl_init_to_expr (isl_ast_expr * expr);
 
 /**
  * \brief Convert a condition.
+ * \since version `1.0.0`
+ *
  * \param for_node Input condition.
  * \return Output condition.
  */

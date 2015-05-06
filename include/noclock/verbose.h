@@ -4,7 +4,7 @@
  * \author Harenome RAZANAJATO RANAIVOARIVONY
  * \date 2015
  * \copyright MIT License
- * \version 1.0.0
+ * \since version `1.0.0`
  *
  * This header file declares verbose printing utilities.
  *
@@ -49,6 +49,7 @@
 /**
  * \defgroup verbose_group Verbose printing
  * \brief Print too many messages.
+ * \since version `1.0.0`
  *
  * Verbose mode
  * ------------
@@ -82,18 +83,22 @@
 /**
  * \brief Enable the verbose mode.
  * \ingroup verbose_group
+ * \since version `1.0.0`
  */
 void verbose_mode_enable (void);
 
 /**
  * \brief Disable the verbose mode.
  * \ingroup verbose_group
+ * \since version `1.0.0`
  */
 void verbose_mode_disable (void);
 
 /**
  * \brief Get the verbose mode state.
  * \ingroup verbose_group
+ * \since version `1.0.0`
+ *
  * \retval true if the verbose mode is enabled.
  * \retval false otherwise.
  */
@@ -105,45 +110,57 @@ bool verbose_mode_state (void);
 
 /**
  * \brief printf(3) when the verbose mode is enabled.
- * \param format The format string.
- * \retval 0 if the verbose mode is disabled.
- * \return The number of written characters.
- * \see printf(3)
  * \ingroup verbose_group
+ * \since version `1.0.0`
+ *
+ * \param format The format string.
+ * \return The number of written characters.
+ * \retval 0 if the verbose mode is disabled.
+ *
+ * \see printf(3)
  */
 int verbosef (const char * format, ...);
 
 /**
  * \brief fprintf(3) when the verbose mode is enabled.
+ * \ingroup verbose_group
+ * \since version `1.0.0`
+ *
  * \param stream The destination stream.
  * \param format The format string.
- * \retval 0 if the verbose mode is disabled.
  * \return The number of written characters.
+ * \retval 0 if the verbose mode is disabled.
+ *
  * \see fprintf(3)
- * \ingroup verbose_group
  */
 int fverbosef (FILE * stream, const char * format, ...);
 
 /**
  * \brief sprintf(3) when the verbose mode is enabled.
+ * \ingroup verbose_group
+ * \since version `1.0.0`
+ *
  * \param str The destination string.
  * \param format The format string.
- * \retval 0 if the verbose mode is disabled.
  * \return The number of written characters.
+ * \retval 0 if the verbose mode is disabled.
+ *
  * \see sprintf(3)
- * \ingroup verbose_group
  */
 int sverbosef (char * str, const char * format, ...);
 
 /**
  * \brief snprintf(3) when the verbose mode is enabled.
+ * \ingroup verbose_group
+ * \since version `1.0.0`
+ *
  * \param str The destination string.
  * \param size The maximum number of characters to write.
  * \param format The format string.
- * \retval 0 if the verbose mode is disabled.
  * \return The number of written characters.
+ * \retval 0 if the verbose mode is disabled.
+ *
  * \see snprintf(3)
- * \ingroup verbose_group
  */
 int snverbosef (char * str, size_t size, const char * format, ...);
 

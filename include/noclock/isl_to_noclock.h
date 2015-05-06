@@ -4,7 +4,7 @@
  * \author Harenome RAZANAJATO RANAIVOARIVONY
  * \date 2015
  * \copyright MIT License
- * \version 1.0.0
+ * \since version `1.0.0`
  */
 
 /* The MIT License (MIT)
@@ -49,12 +49,14 @@
 /**
  * \defgroup conversion_group Conversions.
  * \brief AST and expression conversions.
+ * \since version `1.0.0`
  */
 
 /**
  * \defgroup isl_to_noclock_group ISL to No Clock conversions.
  * \brief Convert ISL to No Clock.
  * \ingroup conversion_group
+ * \since version `1.0.0`
  */
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -63,17 +65,21 @@
 
 /**
  * \brief Convert an ISL expression to a No Clock expression.
+ * \ingroup isl_to_noclock_group
+ * \since version `1.0.0`
+ *
  * \param expr Input ISL expression.
  * \return No Clock expression.
- * \ingroup isl_to_noclock_group
  */
 expression * isl_expr_to_noclock_expr (isl_ast_expr * expr);
 
 /**
  * \brief Convert an ISL AST to a No Clock AST.
+ * \ingroup isl_to_noclock_group
+ * \since version `1.0.0`
+ *
  * \param ast Input ISL AST
  * \return No Clock AST.
- * \ingroup isl_to_noclock_group
  */
 instruction_list * isl_ast_to_noclock_ast (isl_ast_node * ast);
 
