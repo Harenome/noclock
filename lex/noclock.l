@@ -448,6 +448,13 @@ int main (int argc, char ** argv)
         pretty_print_colour_disable ();
         instruction_list_fprint (yyout, final_ast);
     }
+    else if (! verbose_mode_state ())
+    {
+        if (enable_colours)
+            pretty_print_colour_enable ();
+        instruction_list_fprint (yyout, final_ast);
+        pretty_print_colour_disable ();
+    }
 
     /* AST clean up. */
     instruction_list_free (program);
