@@ -47,11 +47,23 @@
 #include "noclock/pretty_print.h"
 
 /**
- * \defgroup expression_group Expressions
- * \brief Arithmetic or boolean expressions.
+ * \defgroup expression_global_group Expressions
+ * \brief ::expression handling.
+ * \since version `1.0.0`
  *
- * This module declares the ::expression_type \c enum and the ::expression
- * struct.
+ * For further information on:
+ *
+ * - expressions, see \ref expression_group
+ * - lists of expressions, see \ref expression_list_group
+ */
+
+/**
+ * \defgroup expression_group Expressions
+ * \ingroup expression_global_group
+ * \brief Arithmetic or boolean ::expression `struct`s.
+ *
+ * This module declares the ::expression_type `enum` and the ::expression
+ * `struct`.
  *
  * An expression can be:
  *
@@ -70,6 +82,8 @@
  * - ::expression setters, see \ref expression_setter.
  * - ::expression operations, see \ref expression_operation.
  * - ::expression input/output, see \ref expression_io.
+ *
+ * To use lists of ::expression, see \ref expression_list_group.
  */
 
 /**

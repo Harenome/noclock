@@ -5,6 +5,8 @@
  * \date 2015
  * \copyright MIT License
  * \version 1.0.0
+ *
+ * This file defines the contents of the \ref expression_list_group module.
  */
 
 /* The MIT License (MIT)
@@ -31,6 +33,34 @@
  */
 
 #include "noclock/expression_list.h"
+
+////////////////////////////////////////////////////////////////////////////////
+// Static functions declarations.
+////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * \brief Delete coordinates from an expression list.
+ * \since version `1.0.0`
+ * \param list The expression list where coordinates must be deleted.
+ * \return The resulting list.
+ */
+static expression_list * expression_list_strip_coords (expression_list * list);
+
+/**
+ * \brief Delete the first expression from an expression list.
+ * \since version `1.0.0`
+ * \param list The expression list where the first expression must be deleted.
+ * \return The resulting list.
+ */
+static expression_list * expression_list_strip_first (expression_list * list);
+
+/**
+ * \brief Delete expressions that refer to keywords.
+ * \since version `1.0.0`
+ * \param list The expression list where the keywords must be deleted.
+ * \return The resulting list.
+ */
+static expression_list * expression_list_strip_keywords (expression_list * list);
 
 ////////////////////////////////////////////////////////////////////////////////
 // Allocation, initialization, copy, cleaning, free.
@@ -68,6 +98,32 @@ expression_list * expression_list_copy (
         copy = NULL;
 
     return copy;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Getters.
+////////////////////////////////////////////////////////////////////////////////
+
+size_t expression_list_size (expression_list * list)
+{
+    size_t i = 0;
+
+    for (expression_list * current = list; current != NULL;
+            current = current->next)
+        i++;
+
+    return i;
+}
+
+expression_list * expression_list_n (
+        expression_list * list, size_t n)
+{
+    expression_list * nth = list;
+
+    for (size_t i = 0; nth != NULL && i < n; ++i)
+        nth = nth->next;
+
+    return nth;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -129,92 +185,17 @@ void expression_list_free (expression_list * list)
     }
 }
 
-static expression_list * expression_list_strip_coords
-        (expression_list * list)
-{
-    expression_list * current = list;
-    while (current != NULL)
-    {
-        expression_list * next = NULL;
-        if (current->next != NULL)
-        {
-            next = current->next->next;
-            expression_free (current->next->element);
-            free (current->next);
-        }
-        current->next = next;
-        current = current->next;
-    }
-
-    return list;
-}
-
-static expression_list * expression_list_strip_first
-        (expression_list * list)
-{
-    expression_list * next = list->next;
-    expression_free (list->element);
-    free (list);
-    return next;
-}
-
-static expression_list * expression_list_strip_keywords
-        (expression_list * list)
-{
-    expression_list * current = list;
-    while (current != NULL)
-    {
-        expression_list * next = current->next;
-
-        while (next != NULL && next->element->type == EXPR_ID)
-        {
-            char * id = next->element->content.identifier;
-            if (strcmp (id, "f") == 0 || strcmp (id, "a") == 0)
-            {
-                current->next = next->next;
-                expression_free (next->element);
-                free (next);
-                next = current->next;
-            }
-            else
-                next = NULL;
-        }
-        current = current->next;
-    }
-
-    return list;
-}
-
 expression_list * expression_list_strip
         (expression_list * list)
 {
+    /* Removing the coordinates must be the very first operation! */
     list = expression_list_strip_coords (list);
-    list = expression_list_strip_keywords (list);
+
+    /* It *should* be safe to execute these operations in any order. */
     list = expression_list_strip_first (list);
+    list = expression_list_strip_keywords (list);
 
     return list;
-}
-
-size_t expression_list_size (expression_list * list)
-{
-    size_t i = 0;
-
-    for (expression_list * current = list; current != NULL;
-            current = current->next)
-        i++;
-
-    return i;
-}
-
-expression_list * expression_list_n (
-        expression_list * list, size_t n)
-{
-    expression_list * nth = list;
-
-    for (size_t i = 0; nth != NULL && i < n; ++i)
-        nth = nth->next;
-
-    return nth;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -269,4 +250,67 @@ char * expression_list_to_string (
     }
 
     return buffer;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Static functions definitions.
+////////////////////////////////////////////////////////////////////////////////
+
+expression_list * expression_list_strip_coords (expression_list * list)
+{
+    /* We know that when expression lists that contain coordinates are
+     * built, the coordinates are placed at even indexes (starting at 0):
+     * this function shall delete expressions at even indexes (when the function
+     * starts!) and keep expressions at odd indexes.
+     */
+
+    expression_list * current = list;
+    while (current != NULL)
+    {
+        expression_list * next = NULL;
+        if (current->next != NULL)
+        {
+            next = current->next->next;
+            expression_free (current->next->element);
+            free (current->next);
+        }
+        current->next = next;
+        current = current->next;
+    }
+
+    return list;
+}
+
+expression_list * expression_list_strip_first (expression_list * list)
+{
+    expression_list * next = list->next;
+    expression_free (list->element);
+    free (list);
+    return next;
+}
+
+expression_list * expression_list_strip_keywords (expression_list * list)
+{
+    expression_list * current = list;
+    while (current != NULL)
+    {
+        expression_list * next = current->next;
+
+        while (next != NULL && next->element->type == EXPR_ID)
+        {
+            char * id = next->element->content.identifier;
+            if (strcmp (id, "f") == 0 || strcmp (id, "a") == 0)
+            {
+                current->next = next->next;
+                expression_free (next->element);
+                free (next);
+                next = current->next;
+            }
+            else
+                next = NULL;
+        }
+        current = current->next;
+    }
+
+    return list;
 }
