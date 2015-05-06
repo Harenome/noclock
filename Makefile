@@ -339,10 +339,17 @@ install:
 	@$(PROGRESS) "install: $(BOLD)$(DESTDIR)$(BINDIR)/$(PROGRAM_NAME)$(NORMAL)" \
 		&& $(INSTALL_PROGRAM) -D $(PATH_BIN)/$(PROGRAM_NAME) \
 			$(DESTDIR)$(BINDIR)/$(PROGRAM_NAME)
+	@$(PROGRESS) "install:" \
+		"$(BOLD)$(DESTDIR)$(MANDIR)/man1/$(PROGRAM_NAME).1$(NORMAL)" \
+		&& $(INSTALL_DATA) -D $(PATH_MAN)/man1/$(PROGRAM_NAME).1 \
+			$(DESTDIR)$(MANDIR)/man1/$(PROGRAM_NAME).1
 
 uninstall:
 	@$(PROGRESS) "uninstall: $(BOLD)$(DESTDIR)$(BINDIR)/$(PROGRAM_NAME)$(NORMAL)" \
 		&& $(RM) $(DESTDIR)$(BINDIR)/$(PROGRAM_NAME)
+	@$(PROGRESS) "uninstall:" \
+		"$(BOLD)$(DESTDIR)$(MANDIR)/man1/$(PROGRAM_NAME).1$(NORMAL)" \
+		&& $(RM) $(DESTDIR)$(MANDIR)/man1/$(PROGRAM_NAME).1
 
 ################################################################################
 # Cleaning
