@@ -27,6 +27,8 @@
     #include <stdbool.h>
     #include <string.h>
     #include <sysexits.h>
+    #include <unistd.h>
+    #include <getopt.h>
 
     #include <isl/ctx.h>
     #include <isl/set.h>
@@ -67,6 +69,12 @@
     isl_printer * printer;
     string_list _parameters;
     string_list * parameters = & _parameters;
+
+    int enable_colours = 1;
+    int enable_verbose = 0;
+
+    FILE * input_file = NULL;
+    FILE * output_file = NULL;
 %}
 
 number [1-9][0-9]*|0
@@ -167,76 +175,239 @@ void yyerror (const char * s)
     fprintf (stderr, "\x1B[0m\n");
 }
 
-int main (int argc, char ** argv)
+void print_infos (void)
 {
-    --argc; ++argv;
+    fprintf (stderr, "noclock version %s\n", noclock_version ());
+    fprintf (stderr, "%s", noclock_compilation_informations ());
+    fprintf (stderr, "%s", noclock_libraries_informations ());
+}
 
-    /* Expect at least one argument. */
-    if (argc < 1)
-    {
-        fprintf (stderr, "Error: wrong number of arguments.\n");
-    }
-
-    /* Open input. */
-    yyin = fopen (argv[0], "r");
-    if (yyin == NULL)
-    {
-        perror ("fopen");
-        exit (EX_OSERR);
-    }
-
+void debug_infos (void)
+{
     fdebug (stderr, "noclock version %s\n", noclock_version ());
     fdebug (stderr, "%s", noclock_compilation_informations ());
     fdebug (stderr, "%s", noclock_libraries_informations ());
+}
 
-    verbose_mode_enable ();
+void print_help (void)
+{
+    if (enable_colours)
+    {
+        fprintf (stderr,
+                PP_BOLD "noclock" PP_RESET " [OPTIONS] <input_file> <output_file>\n\n"
+                PP_BOLD "OPTIONS\n\n" PP_RESET
 
-    /* ISL. */
+                "\t" PP_BOLD "-h" PP_RESET ", " PP_BOLD "--help\n" PP_RESET
+                "\t\tPrint this help.\n"
+
+                "\t" PP_BOLD "-v" PP_RESET ", " PP_BOLD "--version\n" PP_RESET
+                "\t\tPrint the version.\n"
+
+                "\t" PP_BOLD "-i" PP_RESET ", " PP_BOLD "--input" PP_RESET " <file>\n"
+                "\t\tUse <file> as the input file.\n"
+
+                "\t" PP_BOLD "-o" PP_RESET ", " PP_BOLD "--output" PP_RESET " <file>\n"
+                "\t\tUse <file> as the output file.\n"
+
+                "\t" PP_BOLD "--verbose\n" PP_RESET
+                "\t\tEnable verbose mode.\n"
+
+                "\t" PP_BOLD "--no-colours\n" PP_RESET
+                "\t\tDisable colours.\n"
+
+                "\n" PP_BOLD "noclock" PP_RESET " version %s\n",
+                noclock_version ()
+                );
+    }
+    else
+    {
+        fprintf (stderr,
+                "noclock" " [OPTIONS] <input_file> <output_file>\n\n"
+                "OPTIONS\n\n"
+
+                "\t" "-h" ", " "--help\n" 
+                "\t\tPrint this help.\n"
+
+                "\t" "-v" ", " "--version\n"
+                "\t\tPrint the version.\n"
+
+                "\t" "-i" ", " "--input" " <file>\n"
+                "\t\tUse <file> as the input file.\n"
+
+                "\t" "-o" ", " "--output" " <file>\n"
+                "\t\tUse <file> as the output file.\n"
+
+                "\t" "--verbose\n"
+                "\t\tEnable verbose mode.\n"
+
+                "\t" "--no-colours\n"
+                "\t\tDisable colours.\n"
+
+                "\n" "noclock" " version %s\n",
+                noclock_version ()
+                );
+    }
+
+}
+
+void parse_args (int argc, char ** argv)
+{
+    static const struct option noclock_options[] =
+    {
+        { "no-colours",    no_argument, & enable_colours, 0, },
+        { "verbose",   no_argument, & enable_verbose, 1, },
+        { "input",    required_argument, NULL, 'i', },
+        { "output",    required_argument, NULL, 'o', },
+        { "version",   no_argument, NULL, 'v', },
+        { "help",      no_argument, NULL, 'h', },
+        { 0, 0, 0, 0, },
+    };
+
+    bool unknown_option = false;
+    int val = 1;
+    opterr = 0;
+
+    do
+    {
+        int longindex;
+        val = getopt_long (argc, argv, "iovh", noclock_options,
+                & longindex);
+
+        switch (val)
+        {
+            case 'i':
+                input_file = fopen (argv[optind], "r");
+                __forbid_value (input_file, NULL, "fopen", EX_OSERR);
+                break;
+            case 'o':
+                output_file = fopen (argv[optind], "w");
+                __forbid_value (output_file, NULL, "fopen", EX_OSERR);
+                break;
+            case 'v':
+                print_infos ();
+                exit (EXIT_SUCCESS);
+                break;
+            case 'h':
+                print_help ();
+                exit (EXIT_SUCCESS);
+                break;
+            case '?':
+                if (enable_colours)
+                    fprintf (stderr, "\x1B[1m\x1B[31mError: Unknown option "
+                        "\"%s\". %c \x1B[0m\n",
+                        argv[optind-1]);
+                else
+                    fprintf (stderr, "Error: Unknown option \"%s\".\n",
+                        argv[optind-1]);
+                unknown_option = true;
+                break;
+            default:
+                break;
+        }
+    }
+    while (val != - 1);
+
+    if (enable_verbose)
+        verbose_mode_enable();
+
+    if (unknown_option)
+        exit (EX_USAGE);
+}
+
+void verbose_header (FILE * file, const char * header)
+{
+    char * copy = strdup (header);
+    for (size_t i = 0; copy[i]; ++i)
+        copy[i] = '=';
+
+    fverbosef (file, PP_BOLD "\n%s\n%s\n" PP_RESET, header, copy);
+}
+
+int main (int argc, char ** argv)
+{
+    /* Parse command line arguments and expect at least one non-option
+     * argument if no file has been opened.
+     */
+    parse_args (argc, argv);
+    if (input_file == NULL && optind >= argc)
+    {
+        fprintf (stderr, "Error: wrong number of arguments.\n");
+        exit (EX_USAGE);
+    }
+
+    /* Set yyin to the input file or open the input file. */
+    yyin = input_file;
+    if (yyin == NULL)
+    {
+        yyin = fopen (argv[optind++], "r");
+        __forbid_value (yyin, NULL, "fopen", EX_OSERR);
+    }
+
+    /* Open the output file if there is one and it has not bee opened yet. */
+    if (output_file == NULL && optind < argc)
+    {
+        output_file = fopen (argv[optind++], "w");
+        __forbid_value (output_file, NULL, "fopen", EX_OSERR);
+    }
+
+    /* If the destination output is not the console, colours must be disabled. */
+    if (output_file != NULL)
+        yyout = output_file;
+
+    /* Always print no clock information in DEBUG mode. */
+    debug_infos();
+
+    /* Initialize ISL. */
     ctx = isl_ctx_alloc ();
     printer = isl_printer_to_file (ctx, stderr);
 
+    /* Initialize the parameter list. */
     string_list_init (parameters);
     string_list_append (parameters, "f");
     string_list_append (parameters, "a");
 
-    /* Parse. */
+    /* Parse the input. */
     yyparse ();
 
+    /* Compute dates and add annotations to the AST. */
     instruction_list_compute_dates (program, NULL, NULL);
     instruction_list_decorate (program, NULL, NULL);
 
     string_list s_list;
     string_list_init (& s_list);
 
-    fverbosef (stderr, PP_BOLD "\nOriginal program\n================\n"
-            PP_RESET);
+    verbose_header (stderr, "Original program");
     if (verbose_mode_state ())
     {
-        pretty_print_colour_enable ();
+        if (enable_colours)
+            pretty_print_colour_enable ();
         instruction_list_fprint (stderr, program);
         pretty_print_colour_disable ();
     }
 
-    fverbosef (stderr, PP_BOLD "\nInstructions\n============\n" PP_RESET);
-
+    /* Extract the *S* instructions and unite them.
+     * (In verbose mode, the *S* instructions will be printed.)
+     */
+    verbose_header (stderr, "Instructions");
     isl_set_list * sets = program_to_set_list (ctx, parameters, program,
         & s_list);
-
-
     isl_union_set * unions = union_set_list (sets);
 
-    fverbosef (stderr, PP_BOLD "\nISL Union\n=========\n" PP_RESET);
+    /* Print the union (only in verbose mode). */
+    verbose_header (stderr, "ISL Union");
     if (verbose_mode_state ())
         isl_printer_print_union_set (printer, unions);
     fverbosef (stderr, "\n");
 
+    /* Create the ISL AST. */
     isl_union_map * schedule = isl_union_set_identity (unions);
     isl_space * space = isl_union_map_get_space (schedule);
     isl_set * context = isl_set_universe (isl_space_params (space));
     isl_ast_build * build = isl_ast_build_from_context (context);
     isl_ast_node * ast = isl_ast_build_ast_from_schedule (build, schedule);
 
-    fverbosef (stderr, PP_BOLD "\nISL code\n========\n" PP_RESET);
+    /* Print the ISL AST (only in verbose mode). */
+    verbose_header (stderr, "ISL Code");
     if (verbose_mode_state ())
     {
         int format = isl_printer_get_output_format (printer);
@@ -245,23 +416,38 @@ int main (int argc, char ** argv)
         printer = isl_printer_set_output_format (printer, format);
     }
 
+    /* Convert the ISL AST to a NoClock AST and get the list of *S*
+     * instructions. */
     instruction_list * final_ast = isl_ast_to_noclock_ast (ast);
-
     instruction_list * calls = call_list (final_ast);
 
-    fverbosef (stdout,
-            PP_BOLD "\nISL AST => NoClock AST\n======================\n" PP_RESET);
-    pretty_print_colour_enable ();
-    instruction_list_fprint (stdout, final_ast);
+    /* Print the initial NoClock AST (only in verbose mode). */
+    verbose_header (stderr, "ISL AST => NoClock AST");
+    if (enable_colours)
+        pretty_print_colour_enable ();
+    if (verbose_mode_state ())
+        instruction_list_fprint (stderr, final_ast);
     pretty_print_colour_disable ();
 
+    /* Adjust the NoClock AST. */
     instruction_list_fill (final_ast, calls);
     instruction_list_strip (calls, & s_list);
 
-    fverbosef (stdout, PP_BOLD "\nFinal program\n=============\n" PP_RESET);
-    pretty_print_colour_enable ();
-    instruction_list_fprint (stdout, final_ast);
-    pretty_print_colour_disable ();
+    /* Print the final result. */
+    if (verbose_mode_state ())
+    {
+        verbose_header (stderr, "Final program");
+        if (enable_colours)
+            pretty_print_colour_enable ();
+        instruction_list_fprint (stderr, final_ast);
+        pretty_print_colour_disable ();
+    }
+
+    if (output_file != NULL)
+    {
+        pretty_print_colour_disable ();
+        instruction_list_fprint (yyout, final_ast);
+    }
 
     /* AST clean up. */
     instruction_list_free (program);
