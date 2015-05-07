@@ -294,7 +294,7 @@ void parse_args (int argc, char ** argv)
             case '?':
                 if (enable_colours)
                     fprintf (stderr, "\x1B[1m\x1B[31mError: Unknown option "
-                        "\"%s\". %c \x1B[0m\n",
+                        "\"%s\".\x1B[0m\n",
                         argv[optind-1]);
                 else
                     fprintf (stderr, "Error: Unknown option \"%s\".\n",
