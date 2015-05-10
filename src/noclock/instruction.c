@@ -5,6 +5,18 @@
  * \date 2015
  * \copyright MIT License
  * \since version `1.0.0`
+ *
+ * * Conversion ::instruction -> const char *
+ * --------------------------------------------
+ *
+ * The conversion of ::instruction into strings relies on an array of string
+ * representations for ::instruction_type.
+ *
+ * The array #instruction_type_strings should be edited with care whenever
+ * the ::instruction_type enumeration is modified: all values lower than
+ * ::INSTR_UNKNOWN should have a corresponding string in this array. (This
+ * is also the reason why ::INSTR_UNKNOWN should always be the last value
+ * of the enumeration, as this makes various checks much easier...)
  */
 
 /* The MIT License (MIT)
@@ -33,6 +45,25 @@
 #include "noclock/instruction.h"
 
 ////////////////////////////////////////////////////////////////////////////////
+// Static variables.
+////////////////////////////////////////////////////////////////////////////////
+
+
+static const char * instruction_type_strings[] =
+{
+    [INSTR_CALL]            = "",
+    [INSTR_FOR]             = "",
+    [INSTR_IF]              = "",
+    [INSTR_IF_ELSE]         = "",
+    [INSTR_ADVANCE]         = "advance",
+    [INSTR_FINISH]          = "finish",
+    [INSTR_ASYNC]           = "async",
+    [INSTR_CLOCKED_FINISH]  = "clocked finish",
+    [INSTR_CLOCKED_ASYNC]   = "clocked async",
+    [INSTR_UNKNOWN]         = "",
+};
+
+////////////////////////////////////////////////////////////////////////////////
 // Extern functions.
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -47,6 +78,14 @@ extern void instruction_list_fprint (FILE *, const instruction_list *);
 // Static functions declarations.
 ////////////////////////////////////////////////////////////////////////////////
 
+/**
+ * \brief Convert an ::instruction_type into a string.
+ * \since version `1.0.0`
+ *
+ * \param t ::instruction_type to convert into a string.
+ *
+ * \return The string representation of \a t.
+ */
 static const char * instruction_type_to_string (instruction_type t);
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -665,19 +704,6 @@ void instruction_call_fprint (FILE * f, const function_call * instr)
 
 const char * instruction_type_to_string (instruction_type t)
 {
-    static const char * type_chars[] =
-    {
-        [INSTR_CALL]            = "",
-        [INSTR_FOR]             = "",
-        [INSTR_IF]              = "",
-        [INSTR_IF_ELSE]         = "",
-        [INSTR_ADVANCE]         = "advance",
-        [INSTR_FINISH]          = "finish",
-        [INSTR_ASYNC]           = "async",
-        [INSTR_CLOCKED_FINISH]  = "clocked finish",
-        [INSTR_CLOCKED_ASYNC]   = "clocked async",
-        [INSTR_UNKNOWN]         = "",
-    };
 
-    return type_chars[t];
+    return instruction_type_strings[t];
 }
