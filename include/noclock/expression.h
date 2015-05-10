@@ -286,7 +286,7 @@ expression * expression_from_boolean (bool boolean);
  * \brief Set properties of expressions.
  * \since version `1.0.0`
  *
- * These functions allows the user to set the properties of an expression.
+ * These functions allow the user to set the properties of an expression.
  * Please set coherent properties. If you are not confident a given set of
  * properties would be coherent, please fallback to the functions from
  * \ref expression_management and \ref expression_operation. The functions
