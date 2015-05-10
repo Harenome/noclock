@@ -5,6 +5,8 @@
  * \date 2015
  * \copyright MIT License
  * \since version `1.0.0`
+ *
+ * This file defines the contents of the \ref instruction_list module.
  */
 
 /* The MIT License (MIT)
@@ -31,6 +33,23 @@
  */
 
 #include "noclock/instruction_list.h"
+
+////////////////////////////////////////////////////////////////////////////////
+// Static function declarations.
+////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * \brief Count the advances.
+ * \since version `1.0.0`
+ *
+ * \param list Input AST.
+ * \return The number of advances.
+ */
+static expression * _count_advances (instruction_list * list);
+
+////////////////////////////////////////////////////////////////////////////////
+// Allocation, initialization, copy, cleaning, free.
+////////////////////////////////////////////////////////////////////////////////
 
 instruction_list * instruction_list_alloc (void)
 {
@@ -65,6 +84,9 @@ void instruction_list_free (instruction_list * list)
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// Operations.
+////////////////////////////////////////////////////////////////////////////////
 
 instruction_list * instruction_list_append (instruction_list * list,
         instruction * i)
@@ -109,18 +131,139 @@ instruction_list * instruction_list_cat (instruction_list * a,
     return a;
 }
 
-
-void instruction_list_fprint (FILE * f, const instruction_list * list)
+void instruction_list_wrap (instruction_list * list, instruction * instr,
+        instruction_type t)
 {
-    for (const instruction_list * current = list; current != NULL;
-            current = current->next )
+    instruction_list * nth = instruction_list_find_parent (list, instr);
+
+    if (nth != NULL && nth->element->type != t)
     {
-        instruction_fprint (f, current->element);
-        if (current->element->type == INSTR_ADVANCE
-                || current->element->type == INSTR_CALL)
-            fprintf (f, ";\n");
+        instruction_list * wrapped = instruction_list_alloc ();
+        wrapped->element = nth->element;
+        wrapped->next = NULL;
+
+        instruction * wrapper = instruction_alloc ();
+        wrapper->type = t;
+        wrapper->content.block = wrapped;
+
+        nth->element = wrapper;
     }
 }
+
+void instruction_list_fill (instruction_list * list, instruction_list * calls)
+{
+    for (instruction_list * current = calls; current != NULL;
+            current = current->next)
+    {
+        expression_list * expressions =
+            current->element->content.call.arguments;
+
+        bool coord = false;
+        bool stop = false;
+        long int previous_coord = -1;
+        instruction_list * scope = list;
+
+        for (expression_list * current_expr = expressions;
+                current_expr != NULL && ! stop; current_expr = current_expr->next)
+        {
+            expression * expr = current_expr->element;
+            if (! coord)
+            {
+                scope = instruction_list_find_parent (scope, current->element);
+
+                if (previous_coord != -1)
+                {
+                    if (expr->type == EXPR_ID)
+                    {
+                        instruction_list * to_wrap = instruction_body (
+                                scope->element);
+
+                        if (scope->element->type == INSTR_IF
+                            && scope->element->content.branch.has_else)
+                        {
+                            if (instruction_list_is_indirect_parent (
+                                scope->element->content.branch.false_body,
+                                current->element))
+                            {
+                                to_wrap =
+                                    scope->element->content.branch.false_body;
+                            }
+                        }
+
+                        if (to_wrap != NULL)
+                        {
+                            bool wrapped = false;
+                            if (! strcmp (expr->content.identifier, "f"))
+                            {
+                                instruction_list_wrap (to_wrap, current->element,
+                                        INSTR_FINISH);
+                                wrapped = true;
+                            }
+                            else if (! strcmp (expr->content.identifier, "a"))
+                            {
+                                instruction_list_wrap (to_wrap, current->element,
+                                        INSTR_ASYNC);
+                                wrapped = true;
+                            }
+
+                            if (wrapped)
+                            {
+                                to_wrap = instruction_list_find_parent (to_wrap,
+                                        current->element);
+                                scope = to_wrap->element->content.block;
+
+                                if (scope->element == current->element)
+                                    stop = true;
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                previous_coord = expr->content.number;
+            }
+            coord = ! coord;
+
+            size_t list_size = expression_list_size (current_expr);
+            if (list_size <= 3)
+                stop = true;
+        }
+    }
+}
+
+void instruction_list_strip (instruction_list * list, string_list * s)
+{
+    for (instruction_list * current = list; current != NULL;
+            current = current->next)
+    {
+        current->element->content.call.arguments =
+            expression_list_strip
+                (current->element->content.call.arguments);
+
+        size_t n = expression_list_size (
+                current->element->content.call.arguments);
+        n = n > 2 ? n - 2 : 0;
+        expression_list * new_last = expression_list_n (
+                current->element->content.call.arguments, n);
+
+        if (new_last != NULL && new_last->next != NULL
+            && new_last->next->element != NULL
+            && new_last->next->element->type == EXPR_NUMBER)
+        {
+            free (current->element->content.call.identifier);
+            ssize_t place = new_last->next->element->content.number;
+            current->element->content.call.identifier =
+                strdup (string_list_parameter (s, place));
+            expression_list_free (new_last->next);
+            new_last->next = NULL;
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Annotations.
+////////////////////////////////////////////////////////////////////////////////
 
 void instruction_list_decorate (instruction_list * list, const char * level,
     const char * boundaries)
@@ -224,55 +367,6 @@ void instruction_list_decorate (instruction_list * list, const char * level,
             position++;
         current = current->next;
     }
-}
-
-static expression * _count_advances (instruction_list * list)
-{
-    expression * count = expression_alloc ();
-    count->type = EXPR_NUMBER;
-    count->content.number = 0;
-
-    for (instruction_list * current = list; current != NULL;
-            current = current->next)
-    {
-        instruction_type t = current->element->type;
-
-        if (t == INSTR_ADVANCE)
-        {
-            if (count->type == EXPR_NUMBER)
-                count->content.number++;
-            else
-            {
-                expression * right = expression_alloc ();
-                right->type = EXPR_NUMBER;
-                right->content.number = 1;
-
-                count = expression_add (count, right);
-            }
-        }
-        else if (t == INSTR_FOR)
-        {
-            expression * left = expression_copy
-                (current->element->content.loop.left_boundary);
-            expression * right = expression_copy
-                (current->element->content.loop.right_boundary);
-
-            expression * bounds =
-                expression_sub (right, left);
-            expression * one = expression_from_number (1);
-            expression * real_bounds = expression_add (bounds, one);
-
-            expression * for_block_advances = _count_advances
-                (current->element->content.loop.body);
-
-            expression * for_advances =
-                expression_mult (real_bounds, for_block_advances);
-
-            count = expression_add (count, for_advances);
-        }
-    }
-
-    return count;
 }
 
 void instruction_list_compute_dates (instruction_list * list,
@@ -400,6 +494,10 @@ void instruction_list_compute_dates (instruction_list * list,
     expression_free (advances);
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// Getters.
+////////////////////////////////////////////////////////////////////////////////
+
 instruction_list * instruction_list_n (instruction_list * list, size_t position)
 {
     instruction_list * current = list;
@@ -413,23 +511,13 @@ instruction_list * instruction_list_n (instruction_list * list, size_t position)
     return current;
 }
 
-void instruction_list_wrap (instruction_list * list, instruction * instr,
-        instruction_type t)
+size_t instruction_list_size (instruction_list * list)
 {
-    instruction_list * nth = instruction_list_find_parent (list, instr);
-
-    if (nth != NULL && nth->element->type != t)
-    {
-        instruction_list * wrapped = instruction_list_alloc ();
-        wrapped->element = nth->element;
-        wrapped->next = NULL;
-
-        instruction * wrapper = instruction_alloc ();
-        wrapper->type = t;
-        wrapper->content.block = wrapped;
-
-        nth->element = wrapper;
-    }
+    size_t i = 0;
+    for (instruction_list * current = list; current != NULL;
+            current = current->next)
+        ++i;
+    return i;
 }
 
 bool instruction_list_is_indirect_parent (instruction_list * list,
@@ -491,127 +579,6 @@ instruction_list * instruction_list_find_parent (instruction_list * list,
     return parent;
 }
 
-void instruction_list_fill (instruction_list * list, instruction_list * calls)
-{
-    for (instruction_list * current = calls; current != NULL;
-            current = current->next)
-    {
-        expression_list * expressions =
-            current->element->content.call.arguments;
-
-        bool coord = false;
-        bool stop = false;
-        long int previous_coord = -1;
-        instruction_list * scope = list;
-
-        for (expression_list * current_expr = expressions;
-                current_expr != NULL && ! stop; current_expr = current_expr->next)
-        {
-            expression * expr = current_expr->element;
-            if (! coord)
-            {
-                scope = instruction_list_find_parent (scope, current->element);
-
-                if (previous_coord != -1)
-                {
-                    if (expr->type == EXPR_ID)
-                    {
-                        instruction_list * to_wrap = instruction_body (
-                                scope->element);
-
-                        if (scope->element->type == INSTR_IF
-                            && scope->element->content.branch.has_else)
-                        {
-                            if (instruction_list_is_indirect_parent (
-                                scope->element->content.branch.false_body,
-                                current->element))
-                            {
-                                to_wrap =
-                                    scope->element->content.branch.false_body;
-                            }
-                        }
-
-                        if (to_wrap != NULL)
-                        {
-                            bool wrapped = false;
-                            if (! strcmp (expr->content.identifier, "f"))
-                            {
-                                instruction_list_wrap (to_wrap, current->element,
-                                        INSTR_FINISH);
-                                wrapped = true;
-                            }
-                            else if (! strcmp (expr->content.identifier, "a"))
-                            {
-                                instruction_list_wrap (to_wrap, current->element,
-                                        INSTR_ASYNC);
-                                wrapped = true;
-                            }
-
-                            if (wrapped)
-                            {
-                                to_wrap = instruction_list_find_parent (to_wrap,
-                                        current->element);
-                                scope = to_wrap->element->content.block;
-
-                                if (scope->element == current->element)
-                                    stop = true;
-                            }
-                        }
-                    }
-                }
-            }
-            else
-            {
-                previous_coord = expr->content.number;
-            }
-            coord = ! coord;
-
-            size_t list_size = expression_list_size (current_expr);
-            if (list_size <= 3)
-                stop = true;
-        }
-    }
-}
-
-void instruction_list_strip (instruction_list * list, string_list * s)
-{
-    for (instruction_list * current = list; current != NULL;
-            current = current->next)
-    {
-        current->element->content.call.arguments =
-            expression_list_strip
-                (current->element->content.call.arguments);
-
-        size_t n = expression_list_size (
-                current->element->content.call.arguments);
-        n = n > 2 ? n - 2 : 0;
-        expression_list * new_last = expression_list_n (
-                current->element->content.call.arguments, n);
-
-        if (new_last != NULL && new_last->next != NULL
-            && new_last->next->element != NULL
-            && new_last->next->element->type == EXPR_NUMBER)
-        {
-            free (current->element->content.call.identifier);
-            ssize_t place = new_last->next->element->content.number;
-            current->element->content.call.identifier =
-                strdup (string_list_parameter (s, place));
-            expression_list_free (new_last->next);
-            new_last->next = NULL;
-        }
-    }
-}
-
-size_t instruction_list_size (instruction_list * list)
-{
-    size_t i = 0;
-    for (instruction_list * current = list; current != NULL;
-            current = current->next)
-        ++i;
-    return i;
-}
-
-
 instruction_list * call_list (instruction_list * ast)
 {
     instruction_list * list = NULL;
@@ -654,5 +621,74 @@ instruction_list * call_list (instruction_list * ast)
     }
 
     return list;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Input / Output.
+////////////////////////////////////////////////////////////////////////////////
+
+void instruction_list_fprint (FILE * f, const instruction_list * list)
+{
+    for (const instruction_list * current = list; current != NULL;
+            current = current->next )
+    {
+        instruction_fprint (f, current->element);
+        if (current->element->type == INSTR_ADVANCE
+                || current->element->type == INSTR_CALL)
+            fprintf (f, ";\n");
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Static function definitions.
+////////////////////////////////////////////////////////////////////////////////
+
+static expression * _count_advances (instruction_list * list)
+{
+    expression * count = expression_alloc ();
+    count->type = EXPR_NUMBER;
+    count->content.number = 0;
+
+    for (instruction_list * current = list; current != NULL;
+            current = current->next)
+    {
+        instruction_type t = current->element->type;
+
+        if (t == INSTR_ADVANCE)
+        {
+            if (count->type == EXPR_NUMBER)
+                count->content.number++;
+            else
+            {
+                expression * right = expression_alloc ();
+                right->type = EXPR_NUMBER;
+                right->content.number = 1;
+
+                count = expression_add (count, right);
+            }
+        }
+        else if (t == INSTR_FOR)
+        {
+            expression * left = expression_copy
+                (current->element->content.loop.left_boundary);
+            expression * right = expression_copy
+                (current->element->content.loop.right_boundary);
+
+            expression * bounds =
+                expression_sub (right, left);
+            expression * one = expression_from_number (1);
+            expression * real_bounds = expression_add (bounds, one);
+
+            expression * for_block_advances = _count_advances
+                (current->element->content.loop.body);
+
+            expression * for_advances =
+                expression_mult (real_bounds, for_block_advances);
+
+            count = expression_add (count, for_advances);
+        }
+    }
+
+    return count;
 }
 
