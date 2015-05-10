@@ -64,7 +64,7 @@
  * \ingroup instruction_list_group
  * \brief Create or destroy ::instruction_list lists.
  *
- * An ::instruciton_list node can be created using instruction_list_alloc().
+ * An ::instruction_list node can be created using instruction_list_alloc().
  *
  * An ::instruction_list list must be destroyed using instruction_list_free() or
  * softly destroyed using instruction_list_soft_free().
@@ -149,7 +149,7 @@ instruction_list * instruction_list_cat (instruction_list * a,
 /**
  * \brief Wrap an instruction list with a wrapping block construct.
  * \relates instruction_list
- * \ingrou pinstruction_list_operation
+ * \ingroup instruction_list_operation
  * \since version `1.0.0`
  *
  * \param list Input list.
@@ -196,7 +196,7 @@ void instruction_list_strip (instruction_list * list, string_list * s);
 
 /**
  * \brief Decorate an AST with levels and boundaries.
- * \relates instrution_list
+ * \relates instruction_list
  * \ingroup instruction_list_annotation
  * \since version `1.0.0`
  *

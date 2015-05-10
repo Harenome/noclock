@@ -559,6 +559,7 @@ void pretty_print_indent_set_style (pp_indent_style style);
  * \ingroup pretty_printing_indent
  * \since version `1.0.0`
  *
+ * \param style The style.
  * \return Corresponding string.
  */
 const char * pretty_print_indent_style_string (pp_indent_style style);
@@ -570,6 +571,7 @@ const char * pretty_print_indent_style_string (pp_indent_style style);
  * \ingroup pretty_printing_indent
  * \since version `1.0.0`
  *
+ * \param style The style.
  * \return Corresponding string.
  *
  * \note This is equivalent to:

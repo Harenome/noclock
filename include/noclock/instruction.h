@@ -113,8 +113,8 @@ typedef enum instruction_type
  */
 typedef struct instruction_list
 {
-    struct instruction * element;
-    struct instruction_list * next;
+    struct instruction * element;       /**< The node's element. */
+    struct instruction_list * next;     /**< The next node. */
 } instruction_list;
 
 //----------------------------------------------------------------------------//
@@ -225,7 +225,7 @@ instruction * instruction_alloc (void);
 
 /**
  * \brief Free an instruction.
- * \realtes instruction
+ * \relates instruction
  * \ingroup instruction_management
  * \since version `1.0.0`
  *
@@ -796,7 +796,7 @@ void instruction_for_loop_set_right_boundary (instruction * instr,
  * \since version `1.0.0`
  *
  * \param instr Target instruction.
- * \param right The target for loop's new body.
+ * \param body The target for loop's new body.
  */
 void instruction_for_loop_set_body (instruction * instr,
         instruction_list * body);
@@ -808,7 +808,7 @@ void instruction_for_loop_set_body (instruction * instr,
  * \since version `1.0.0`
  *
  * \param instr Target instruction.
- * \param right The target branch's new if_then_else::has_else property.
+ * \param has_else The target branch's new if_then_else::has_else property.
  */
 void instruction_if_then_else_set_has_else (instruction * instr, bool has_else);
 
@@ -819,7 +819,7 @@ void instruction_if_then_else_set_has_else (instruction * instr, bool has_else);
  * \since version `1.0.0`
  *
  * \param instr Target instruction.
- * \param right The target branch's new branching condition.
+ * \param condition The target branch's new branching condition.
  */
 void instruction_if_then_else_set_condition (instruction * instr,
         expression * condition);
@@ -831,7 +831,7 @@ void instruction_if_then_else_set_condition (instruction * instr,
  * \since version `1.0.0`
  *
  * \param instr Target instruction.
- * \param right The target branch's new true body.
+ * \param true_body The target branch's new true body.
  */
 void instruction_if_then_else_set_true_body (instruction * instr,
         instruction_list * true_body);
@@ -843,7 +843,7 @@ void instruction_if_then_else_set_true_body (instruction * instr,
  * \since version `1.0.0`
  *
  * \param instr Target instruction.
- * \param right The target branch's new false body.
+ * \param false_body The target branch's new false body.
  */
 void instruction_if_then_else_set_false_body (instruction * instr,
         instruction_list * false_body);
@@ -855,7 +855,7 @@ void instruction_if_then_else_set_false_body (instruction * instr,
  * \since version `1.0.0`
  *
  * \param instr Target instruction.
- * \param right The target X10 construct's new body.
+ * \param block The target X10 construct's new body.
  */
 void instruction_other_set_block (instruction * instr, instruction_list * block);
 

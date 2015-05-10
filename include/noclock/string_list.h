@@ -131,7 +131,7 @@ size_t string_list_append (string_list * list, const char * s);
 /**
  * \defgroup string_list_getter Getters
  * \ingroup string_list_group
- * \brief Getters on ::sting_list
+ * \brief Getters on ::string_list
  * \since version `1.0.0`
  *
  * Getters on ::string_list:
@@ -177,7 +177,7 @@ const char * string_list_parameter (string_list * list, ssize_t place);
 /**
  * \defgroup string_list_io Input/Output
  * \ingroup string_list_group
- * \brief I/O on ::sting_list
+ * \brief I/O on ::string_list
  * \since version `1.0.0`
  *
  * Input/Ouput functions:
