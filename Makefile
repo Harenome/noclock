@@ -30,6 +30,15 @@ BOLD = \x1B[1m
 UL = \x1B[4m
 BOLD_UL = $(BOLD)$(UL)
 
+CYAN = \x1B[38;5;45m
+BLUE = \x1B[38;5;33m
+GREEN = \x1B[38;5;106m
+LIGHT_YELLOW = \x1B[38;5;227m
+YELLOW = \x1B[38;5;226m
+LIGHT_ORANGE = \x1B[38;5;220m
+ORANGE = \x1B[38;5;214m
+DARK_ORANGE = \x1B[38;5;208m
+
 ################################################################################
 # Completion monitoring utility
 ################################################################################
@@ -240,7 +249,7 @@ all: version.o $(PROGRAM_NAME) | bin_dir
 ## Executable
 
 $(PROGRAM_NAME): $(PROGRAM_OBJECTS) y.tab.o lex.yy.o version.o | bin_dir
-	@$(PROGRESS) "\x1B[38;5;106mLinking C executable $(BOLD_UL)$@$(NORMAL)"
+	@$(PROGRESS) "$(GREEN)Linking C executable $(BOLD_UL)$@$(NORMAL)"
 	@$(CC) -o $(PATH_BIN)/$@ \
 		$(patsubst %.o,$(PATH_OBJ)/%.o, $(patsubst $(PATH_OBJ)/%,%, $^)) \
 		$(LDFLAGS) $(LDLIBS)
@@ -249,26 +258,26 @@ $(PROGRAM_NAME): $(PROGRAM_OBJECTS) y.tab.o lex.yy.o version.o | bin_dir
 
 # Generate .o object files.
 %.o: %.c | obj_dir
-	@$(PROGRESS) "\x1B[38;5;33mBuilding C object $(BOLD_UL)$@$(NORMAL)"
+	@$(PROGRESS) "$(BLUE)Building C object $(BOLD_UL)$@$(NORMAL)"
 	@$(CC) $(CFLAGS) -o $(PATH_OBJ)/$@ -c $<
 
 y.tab.c: $(PROGRAM_NAME).y | yacc_dir
-	@$(PROGRESS) "\x1B[38;5;45mGenerating yacc files" \
-		"$(BOLD_UL)$@$(NORMAL)\x1B[38;5;45m and $(BOLD_UL)y.tab.h$(NORMAL)"
+	@$(PROGRESS) "$(CYAN)Generating yacc files" \
+		"$(BOLD_UL)$@$(NORMAL)$(CYAN) and $(BOLD_UL)y.tab.h$(NORMAL)"
 	@$(YACC) $(YFLAGS) -o $@ $<
 	@mv y.tab.c $(PATH_SRC_YACC)/
 	@mv y.tab.h $(PATH_INCLUDE_YACC)/
 
 lex.yy.c: $(PROGRAM_NAME).l | lex_dir
-	@$(PROGRESS) "\x1B[38;5;45mGenerating lex file $(BOLD_UL)$@$(NORMAL)"
+	@$(PROGRESS) "$(CYAN)Generating lex file $(BOLD_UL)$@$(NORMAL)"
 	@$(LEX) $(LFLAGS) -o $(PATH_SRC_LEX)/$@ $<
 
 y.tab.o: y.tab.c | obj_dir
-	@$(PROGRESS) "\x1B[38;5;33mBuilding C object $(BOLD_UL)$@$(NORMAL)"
+	@$(PROGRESS) "$(BLUE)Building C object $(BOLD_UL)$@$(NORMAL)"
 	@$(CC) $(FLAGS_CC_MINIMAL) -o $(PATH_OBJ)/$@ -c $(PATH_SRC_YACC)/y.tab.c
 
 lex.yy.o: lex.yy.c | obj_dir
-	@$(PROGRESS) "\x1B[38;5;33mBuilding C object $(BOLD_UL)$@$(NORMAL)"
+	@$(PROGRESS) "$(BLUE)Building C object $(BOLD_UL)$@$(NORMAL)"
 	@$(CC) $(FLAGS_CC_MINIMAL) -o $(PATH_OBJ)/$@ -c $(PATH_SRC_LEX)/lex.yy.c
 
 ## Compile time specific actions.
@@ -281,7 +290,7 @@ version.o: clean_version | build_dir obj_dir
 	@sed -i "s/__NOCLOCK_LEX__/$(shell $(LEX) --version)/" config/version.c
 	@sed -i "s/__NOCLOCK_YACC__/$(shell $(YACC) -V | head -n 1)/" config/version.c
 	@mv config/version.c $(PATH_BUILD)/autogen/$(PATH_SRC)/$(PROGRAM_NAME)/
-	@$(PROGRESS) "\x1B[38;5;33mBuilding C object $(BOLD_UL)$@$(NORMAL)"
+	@$(PROGRESS) "$(BLUE)Building C object $(BOLD_UL)$@$(NORMAL)"
 	@$(CC) $(CFLAGS) -o $(PATH_OBJ)/$@ \
 		-c $(PATH_BUILD)/autogen/$(PATH_SRC)/$(PROGRAM_NAME)/version.c
 
@@ -362,30 +371,30 @@ clean_version:
 
 clean: clean_yacc clean_lex
 	@$(RM) $(PATH_BIN) $(PATH_OBJ) $(PATH_LIB)
-	@$(PROGRESS) "$(BOLD)\x1B[38;5;226mClean.$(NORMAL)"
+	@$(PROGRESS) "$(BOLD)$(YELLOW)Clean.$(NORMAL)"
 
 cleanyacc: clean_yacc
 clean_yacc:
 	@$(RM) $(PATH_INCLUDE_YACC) $(PATH_SRC_YACC)
-	@$(PROGRESS) "$(BOLD)\x1B[38;5;227mYacc files cleansed.$(NORMAL)"
+	@$(PROGRESS) "$(BOLD)$(LIGHT_YELLOW)Yacc files cleansed.$(NORMAL)"
 
 cleanlex: clean_lex
 clean_lex:
 	@$(RM) $(PATH_INCLUDE_LEX) $(PATH_SRC_LEX)
-	@$(PROGRESS) "$(BOLD)\x1B[38;5;227mLex files cleansed.$(NORMAL)"
+	@$(PROGRESS) "$(BOLD)$(LIGHT_YELLOW)Lex files cleansed.$(NORMAL)"
 
 cleandoc: clean_doc
 clean_doc:
 	@$(RM) $(PATH_DOC)
-	@$(PROGRESS) "$(BOLD)\x1B[38;5;220mDoc cleansed.$(NORMAL)"
+	@$(PROGRESS) "$(BOLD)$(LIGHT_ORANGE)Doc cleansed.$(NORMAL)"
 
 cleanall: clean_all
 clean_all: clean clean_doc
-	@$(PROGRESS) "$(BOLD)\x1B[38;5;214mVery clean.$(NORMAL)"
+	@$(PROGRESS) "$(BOLD)$(ORANGE)Very clean.$(NORMAL)"
 
 distclean: dist_clean
 dist_clean: clean_all
 	@$(RM) $(PATH_BUILD)
-	@$(PROGRESS) "$(BOLD)\x1B[38;5;208mSuper clean.$(NORMAL)"
+	@$(PROGRESS) "$(BOLD)$(DARK_ORANGE)Super clean.$(NORMAL)"
 
 endif
