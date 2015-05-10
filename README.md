@@ -187,6 +187,15 @@ $ doxygen
 
 The generated documentation shall be located in `build/doc`.
 
+Note that there are two Doxyfiles, `Doxyfile` and `Doxyfile_full`. As the file
+names suggest, the `Doxyfile_full` enables much more options that its light
+counterpart `Doxyfile`. To specify which version to use:
+
+~~~{.bash}
+$ doxygen Doxyfile
+$ doxygen Doxyfile_full
+~~~
+
 Usage and Examples
 ------------------
 
