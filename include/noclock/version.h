@@ -74,7 +74,7 @@ static const unsigned int NOCLOCK_VERSION_MINOR = 0;
  * \ingroup version_group
  * \since version `1.0.0`
  */
-static const unsigned int NOCLOCK_VERSION_PATCH = 0;
+static const unsigned int NOCLOCK_VERSION_PATCH = 1;
 
 ////////////////////////////////////////////////////////////////////////////////
 // No Clock version.
