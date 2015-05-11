@@ -196,6 +196,9 @@ $ doxygen Doxyfile
 $ doxygen Doxyfile_full
 ~~~
 
+The generated documentation for the latest release shall also be found at:
+<https://harenome.github.io/noclock>.
+
 Usage and Examples
 ------------------
 
