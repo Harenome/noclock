@@ -191,9 +191,11 @@ expression_list * expression_list_strip
     /* Removing the coordinates must be the very first operation! */
     list = expression_list_strip_coords (list);
 
-    /* It *should* be safe to execute these operations in any order. */
-    list = expression_list_strip_first (list);
+    /* It is not safe to execute these operations in any order.
+     * Strip keywords before deleting the very first argument!
+     */
     list = expression_list_strip_keywords (list);
+    list = expression_list_strip_first (list);
 
     return list;
 }
